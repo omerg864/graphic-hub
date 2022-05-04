@@ -34,9 +34,7 @@ export const register = createAsyncThunk("auth/register", async (user, thunkAPI)
         if (payload.success) {
             return payload;
         }
-        else{
-            return thunkAPI.rejectWithValue(payload);
-        }
+        return thunkAPI.rejectWithValue(payload);
     }catch(error){
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         return thunkAPI.rejectWithValue({message});
@@ -67,9 +65,7 @@ export const verifyAccount = createAsyncThunk("auth/verify", async (token, thunk
         if (payload.success){
             return payload;
         }
-        else{
-            return thunkAPI.rejectWithValue({message: payload.message});
-        }
+        return thunkAPI.rejectWithValue({message: payload.message});
     }catch(error){
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         return thunkAPI.rejectWithValue({message});
@@ -79,7 +75,7 @@ export const verifyAccount = createAsyncThunk("auth/verify", async (token, thunk
 export const getUser = createAsyncThunk("auth/getUser", async (username, thunkAPI) => {
     try{
         const token = thunkAPI.getState().auth.user.token;
-        const payload =  await authService.getUser(username, token);
+        const payload = await authService.getUser(username, token);
         if (!payload.success){
             return thunkAPI.rejectWithValue({message: payload.message});
         }
@@ -93,8 +89,6 @@ export const getUser = createAsyncThunk("auth/getUser", async (username, thunkAP
 export const updateFollow = createAsyncThunk("auth/following", async (username, thunkAPI) => {
     try{
         const token = thunkAPI.getState().auth.user.token;
-        console.log(token);
-        console.log(username);
         const payload =  await authService.updateFollow(username, token);
         if (!payload.success){
             return thunkAPI.rejectWithValue({message: payload.message});
@@ -181,7 +175,7 @@ export const authSlice = createSlice({
                     }).addCase(getUser.rejected, (state, action) => {
                         state.isLoading = false;
                         state.isError = true;
-                        state.message = action.payload;
+                        state.message = action.payload.message;
                         })
                     .addCase(verifyAccount.pending, (state) => {
                         state.isLoading = true;

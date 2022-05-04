@@ -1,14 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../components/Spinner';
 import {useEffect, useState, useCallback} from 'react';
-import { getUser } from '../features/auth/authSlice';
-import { getProjectsByUser, getProject } from '../features/projects/projectSlice';
+import { getUser, reset as user_reset } from '../features/auth/authSlice';
+import { getProjectsByUser, getProject, updateProject, reset } from '../features/projects/projectSlice';
 import { useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
 import ImageViewer from "react-simple-image-viewer";
 import ProfileData from '../components/ProfileData';
 import {AiFillLike, AiOutlineLike} from 'react-icons/ai';
-import { updateProject, reset } from '../features/projects/projectSlice';
 
 
 function Project() {
@@ -22,7 +21,15 @@ function Project() {
 
   const {projects, project, isLoading, isSuccess, isError, message} = useSelector((state) => state.project);
 
-  const { user, friend, isSuccess2, isError2, isLoading2, message2} = useSelector((state) => state.auth);
+  const user_state = useSelector((state) => state.auth);
+
+  const { user, friend } = user_state;
+
+  const message2 = user_state.message;
+
+  const isLoading2 = user_state.isLoading;
+
+  const isError2 = user_state.isError;
 
   const [isLiked, setIsLiked] = useState(false);
 
@@ -51,12 +58,6 @@ function Project() {
 }
 
   useEffect(() => {
-    if (isError){
-      toast.error(message);
-    }
-    if (isError2){
-      toast.error(message2);
-    }
     dispatch(getProject({
       name: params.project,
       username: params.username}))
@@ -65,7 +66,18 @@ function Project() {
         if (user.username === params.username){
           setIsUser(true);
         }
-  }, [dispatch, params, isError, message, isError2, message2, setIsLiked, setLikes, user]);
+  }, [dispatch, params, setIsLiked, setLikes, user]);
+
+  useEffect(() => {
+    if (isError){
+      toast.error(message);
+      dispatch(reset());
+    }
+    if (isError2){
+      toast.error(message2);
+      dispatch(user_reset());
+    }
+  }, [isError, isError2, message, message2]);
 
   useEffect(() => {
     if (project.likes.includes(user.username)) {

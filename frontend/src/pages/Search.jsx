@@ -17,8 +17,10 @@ function Search() {
   const [usersFound, setUsersFound] = useState([]);
   const [projectsFound, setProjectsFound] = useState([]);
 
-  const {users, isLoading, isSuccess, isError, message} = useSelector((state) => state.auth);
-  const {projects, isLoading2, isSuccess2, isError2, message2} = useSelector((state) => state.project);
+  const {user, isLoading, isSuccess, isError, message} = useSelector((state) => state.auth);
+  const project_state = useSelector((state) => state.project);
+
+  const isLoading2 = project_state.isLoading;
 
   useEffect(() => {
     dispatch(searchUser(params.searchKey)).then(result => {

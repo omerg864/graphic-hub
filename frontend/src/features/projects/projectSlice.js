@@ -80,9 +80,10 @@ export const getProjectsByUser = createAsyncThunk("projects/userGet", async (use
     try {
         const token = thunkAPI.getState().auth.user.token;
         const response = await projectService.getProjectsByUser(username, token);
-        return response.data;
+        return response;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
     }
 });
 
@@ -187,7 +188,7 @@ export const projectSlice = createSlice({
                                 }).addCase(getProjectsByUser.rejected, (state, action) => {
                                     state.isLoading = false;
                                     state.isError = true;
-                                    state.message = action.payload;
+                                    state.message = action.payload.message;
                                     })
                                     .addCase(getPrivateProjects.pending, (state) => {
                                         state.isLoading = true;

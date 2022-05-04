@@ -75,17 +75,13 @@ const getProject = async (name, username, token) => {
 }
 
 const getProjectsByUser = async (username, token) => {
-    try {
         const response = await axios.get(API_URL + 'user/' + username, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 accepts:"application/json"
             }
         });
-        return response;
-    } catch (error) {
-        console.log(error);
-    }
+        return response.data;
 }
 
 const getPrivateProjects = async (token) => {

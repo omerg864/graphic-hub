@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../components/Spinner';
 import {useEffect, useState} from 'react';
-import { getUser } from '../features/auth/authSlice';
+import { getUser, reset as user_reset } from '../features/auth/authSlice';
 import { getMessages, sendMessage, deleteMessage, reset } from '../features/messages/messageSlice';
 import { useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
@@ -17,25 +17,39 @@ function Profile() {
   
     const {messages, isLoading, isSuccess, isError, message} = useSelector((state) => state.messages);
   
-    const { user, friend, isSuccess2, isError2, isLoading2, message2} = useSelector((state) => state.auth);
+    const user_state = useSelector((state) => state.auth);
+
+    const { user, friend } = user_state;
+  
+    const message2 = user_state.message;
+  
+    const isLoading2 = user_state.isLoading;
+  
+    const isError2 = user_state.isError;
 
     useEffect(() => {
       var messages_div = document.getElementById("messages");
-      console.log(messages_div.scrollHeight);
-      window.scrollTo(0,messages_div.scrollHeight);
+      if (messages_div) {
+        window.scrollTo(0,messages_div.scrollHeight);
+      }
     }, [isSuccess]);
   
     useEffect(() => {
-      if (isError){
-        toast.error(message);
-      }
-      if (isError2){
-        toast.error(message2);
-      }
       dispatch(getUser(params.reciever));
       dispatch(getMessages(params.reciever));
 
-    }, [dispatch, params, isError, message, isError2, message2]);
+    }, [dispatch, params]);
+
+    useEffect(() => {
+      if (isError){
+        toast.error(message);
+        dispatch(reset());
+      }
+      if (isError2){
+        toast.error(message2);
+        dispatch(user_reset());
+      }
+    }, [isError, isError2, message, message2]);
   
     if (isLoading || isLoading2) {
       return <Spinner />;
@@ -63,7 +77,7 @@ function Profile() {
         </div>
       <div className="container" style={{marginLeft: '20%'}}>
         <div id="messages" style={{marginBottom: '100px'}}>
-        {messages.map(msg => (
+        {messages && messages.map(msg => (
           <div key={msg.id}>
             {msg.sender.toString() === user._id ?
             <div className="mssg-box-sender">

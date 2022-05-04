@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../components/Spinner';
 import {useEffect, useState} from 'react';
-import { getUser, updateFollow } from '../features/auth/authSlice';
-import { getProjectsByUser, getPrivateProjects } from '../features/projects/projectSlice';
+import { getUser, updateFollow, reset as user_reset } from '../features/auth/authSlice';
+import { getProjectsByUser, getPrivateProjects, reset } from '../features/projects/projectSlice';
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { FaUserFriends } from 'react-icons/fa';
@@ -20,7 +20,15 @@ function Profile() {
 
   const {projects, private_projects, private_view_projects, isLoading, isSuccess, isError, message} = useSelector((state) => state.project);
 
-  const { user, friend, isSuccess2, isError2, isLoading2, message2} = useSelector((state) => state.auth);
+  const user_state = useSelector((state) => state.auth);
+
+  const { user, friend } = user_state;
+
+  const message2 = user_state.message;
+
+  const isLoading2 = user_state.isLoading;
+
+  const isError2 = user_state.isError;
 
   const [isUser, setIsUser] = useState(false);
 
@@ -72,12 +80,6 @@ function Profile() {
   }
 
   useEffect(() => {
-    if (isError){
-      toast.error(message);
-    }
-    if (isError2){
-      toast.error(message2);
-    }
     dispatch(getPrivateProjects());
     dispatch(getUser(params.username));
     dispatch(getProjectsByUser(params.username));
@@ -87,7 +89,18 @@ function Profile() {
     if (user.following.includes(params.username)){
       setIsFollowed(true);
     }
-  }, [dispatch, params, isError, message, isError2, message2, user, setIsFollowed]);
+  }, [dispatch, params, user, setIsFollowed]);
+
+  useEffect(() => {
+    if (isError){
+      toast.error(message);
+      dispatch(reset());
+    }
+    if (isError2){
+      toast.error(message2);
+      dispatch(user_reset());
+    }
+  }, [isError, isError2, message, message2]);
 
   if (isLoading || isLoading2) {
     return <Spinner />;
