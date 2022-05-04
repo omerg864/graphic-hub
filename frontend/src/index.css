@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Poppins', sans-serif;
+  padding-top: 65px;
+}
+
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #1f2125;
+  }
+}
+@media (prefers-color-scheme: light) {
+  body {
+    background: #fafafa;
+  }
+}
+
+.heading {
+  text-align: center;
+  justify-content: center;
+}
+
+.sub_title{
+  text-align: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.btn-left {
+  margin-right: 10px;
+}
+
+.btn-block {
+  margin-top: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+.form-group {
+
+  margin-top: 5px;
+}
+.row-div {
+  display: flex;
+  flex-direction: row;
+}
+
+.center-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.end-div {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.content-section {
+  background: #ffffff;
+  padding: 5px 5px;
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+
+.projects {
+  margin-top: 20px;
+  width: 80%;
+}
+
+.account-img {
+  max-width: 200px;
+}
+
+.space {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.styles-module_wrapper__1I_qj {
+  margin-top: 20px;
+}
+
+.mssg-box-sender {
+  width: fit-content;
+  height: fit-content;
+  background: rgb(6, 170, 0);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 0px 10px 0px #ccc;
+  margin-bottom: 5px;
+  word-wrap: break-word;
+}
+
+.mssg-box-reciever {
+  width: fit-content;
+  height: fit-content;
+  background: rgb(255, 255, 255);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 0px 10px 0px #ccc;
+  margin-left: auto;
+  margin-bottom: 5px;
+  word-wrap: break-word;
+}
+
+.bottom-form {
+  position: fixed;
+    bottom: 0;
+    width: 60%;
+  }
+
+.textarea-none {
+  resize: vertical;
+  overflow: auto;
+}
+
+.container {
+  width: 100%;
+
+}
+
+.sender { 
+  margin-right: auto; 
+  margin-left: 0;
+}
+
+.reciever {
+  margin-left: auto; 
+  margin-right: 0;
+}
+
+
+.loadingSpinnerContainer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 5000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingSpinner {
+  width: 64px;
+  height: 64px;
+  border: 8px solid;
+  border-color: #000 transparent #555 transparent;
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
