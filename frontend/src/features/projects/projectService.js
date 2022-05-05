@@ -4,18 +4,10 @@ const API_URL = '/api/projects/';
 
 
 
-const getProjects = async (token) => {
-    try {
-        const response = await axios.get(API_URL, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                accepts:"application/json"
-            }
-        });
-        return response;
-    } catch (error) {
-        console.log(error);
-    }
+const getProjects = async (query) => {
+    var query_string = new URLSearchParams(query).toString();
+    const response = await axios.get(API_URL + `?${query_string}`);
+    return response;
 }
 
 const createProject = async (data, token) => {
@@ -32,9 +24,9 @@ const createProject = async (data, token) => {
     }
 }
 
-const updateProject = async (id, data, token) => {
+const updateProject = async (id, data, type, token) => {
     try {
-        const response = await axios.put(API_URL + id, data, {
+        const response = await axios.put(API_URL + id + `?${type}`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 accepts:"application/json"
@@ -74,16 +66,6 @@ const getProject = async (name, username, token) => {
     }
 }
 
-const getProjectsByUser = async (username, token) => {
-        const response = await axios.get(API_URL + 'user/' + username, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                accepts:"application/json"
-            }
-        });
-        return response.data;
-}
-
 const getPrivateProjects = async (token) => {
     try {
         const response = await axios.get(API_URL + 'private', {
@@ -118,7 +100,6 @@ const projectService = {
     updateProject,
     deleteProject,
     getProject,
-    getProjectsByUser,
     getPrivateProjects,
     searchProjects
 };

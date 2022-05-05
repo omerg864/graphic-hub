@@ -62,7 +62,6 @@ function Profile() {
 
     const submitForm = () => {
       var message = document.getElementById('message').value;
-      console.log(message);
       if (message.length > 0) {
         dispatch(sendMessage({username: params.reciever, message: message}));
         dispatch(reset());

@@ -2,12 +2,54 @@ import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
 import Project from '../models/projectModel.js';
 
+const populate_user = {path: 'user', select: ['-password', '-__v', '-createdAt', '-updatedAt', '-verified']};
+
 const getProjects = asyncHandler(async (req, res, next) => {
-    const projects = await Project.find({user: req.user});
-    res.status(200).json({
-        success: true,
-        projects: projects
-    });
+    const query = req.query;
+    var count = Object.keys(query).length;
+    if (count === 0){
+        var projects = await Project.find({visability: "public"}).populate(populate_user);
+        res.status(200).json({
+            success: true,
+            projects: projects
+        });
+    } else {
+        if (Object.keys(query).includes('username') && Object.keys(query).includes('orderBy')) {
+            const user = await User.findOne({username: query.username});
+            if (!user) {
+                res.status(404);
+                throw new Error('User not found');
+            }
+            var projects = await Project.find({user: user, visability: "public"}).populate(populate_user).sort({[query.orderBy]: -1});
+        } else if (Object.keys(query).includes('username')) {
+            const user = await User.findOne({username: query.username});
+            if (!user) {
+                res.status(404);
+                throw new Error('User not found');
+            }
+            var projects = await Project.find({user: user, visability: "public"}).populate(populate_user);
+        } else if (Object.keys(query).includes('orderBy') && Object.keys(query).includes('following')) {
+            const users = await User.find({username: {$in: query.following.split(',')}});
+            var ids = [];
+            users.forEach(user => {
+                ids.push(user._id);
+            });
+            var projects = await Project.find({user: {$in: ids}, visability: "public"}).populate(populate_user).sort({[query.orderBy]: -1});
+        } else if (Object.keys(query).includes('following')) {
+            const users = await User.find({username: {$in: query.following.split(',')}});
+            var projects = await Project.find({user: {$in: users._id}, visability: "public"}).populate(populate_user);
+        } else if (Object.keys(query).includes('orderBy')) {
+            var projects = await Project.find({visability: "public"}).populate(populate_user).sort({[query.orderBy]: -1});
+        }
+        else {
+            res.status(400);
+            throw new Error('Invalid query');
+        }
+        res.status(200).json({
+            success: true,
+            projects: projects
+        });
+    }
 });
 
 const addProject = asyncHandler(async (req, res, next) => {
@@ -103,20 +145,6 @@ const getProject = asyncHandler(async (req, res, next) => {
     });
 });
 
-const getProjectsByUser = asyncHandler(async (req, res, next) => {
-    const {username} = req.params;
-    const user = await User.findOne({username: username});
-    if (!user) {
-        res.status(404)
-        throw new Error('User not found');
-    }
-    const projects = await Project.find({user: user, visability: 'public'});
-    res.status(200).json({
-        success: true,
-        projects: projects
-    });
-});
-
 const getPrivateProjects = asyncHandler(async (req, res, next) => {
     const projects = await Project.find({user: req.user, visability: 'private'});
     res.status(200).json({
@@ -131,7 +159,7 @@ const searchProjects = asyncHandler(async (req, res, next) => {
         [
         {name: {$regex: query, $options: 'i'}},
         {description: {$regex: query, $options: 'i'}}
-    ], $and : [{visability: 'public'}]});
+    ], $and : [{visability: 'public'}]}).populate(populate_user);
     res.status(200).json({
         success: true,
         projects: projects
@@ -139,4 +167,4 @@ const searchProjects = asyncHandler(async (req, res, next) => {
 });
 
 
-export {getProjects, addProject, updateProject, deleteProject, getProject, getProjectsByUser, getPrivateProjects, searchProjects};
+export {getProjects, addProject, updateProject, deleteProject, getProject, getPrivateProjects, searchProjects};

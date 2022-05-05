@@ -6,7 +6,6 @@ const API_URL = '/api/users/';
 const register = async (user) => {
     try {
         const response = await axios.post(API_URL + "register", user);
-        console.log(response.data);
         if (response.status === 201) {
             toast.success("User created please check your email to verify your account");
         }
@@ -48,7 +47,6 @@ const getUser = async (username, token) => {
 
 const updateFollow = async (username, token) => {
     try {
-        console.log(username)
         const response = await axios.get(API_URL + "follow/" + username, {
             headers: {
                 Authorization: `Bearer ${token}`,

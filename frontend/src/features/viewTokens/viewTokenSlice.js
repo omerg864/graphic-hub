@@ -93,6 +93,9 @@ export const viewTokenSlice = createSlice({
             state.isSuccess = false;
             state.isLoading = false;
             state.message = "";
+        },
+        wipe: (state) => {
+            state = initialState;
         }
     },
     extraReducers: (builder) => {
@@ -154,5 +157,5 @@ export const viewTokenSlice = createSlice({
     }
 });
 
-export const { reset } = viewTokenSlice.actions;
+export const { reset, wipe } = viewTokenSlice.actions;
 export default  viewTokenSlice.reducer;

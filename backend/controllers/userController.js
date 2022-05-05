@@ -102,7 +102,6 @@ const verifyUser = asyncHandler(async (req, res, next) => {
 
 const updateFollow = asyncHandler(async (req, res, next) => {
     const {username} = req.params;
-    console.log('username', username);
     const user = await User.findOne({username: username});
     if (!user) {
         res.status(404)

@@ -2,11 +2,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../components/Spinner';
 import {useEffect, useState} from 'react';
 import { getUser, updateFollow, reset as user_reset } from '../features/auth/authSlice';
-import { getProjectsByUser, getPrivateProjects, reset } from '../features/projects/projectSlice';
+import { getProjects, getPrivateProjects, reset } from '../features/projects/projectSlice';
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
-import { FaUserFriends } from 'react-icons/fa';
-import { MdEmail } from 'react-icons/md';
 import ProjectItem from '../components/ProjectItem';
 import ProfileData from '../components/ProfileData';
 
@@ -82,7 +80,7 @@ function Profile() {
   useEffect(() => {
     dispatch(getPrivateProjects());
     dispatch(getUser(params.username));
-    dispatch(getProjectsByUser(params.username));
+    dispatch(getProjects({username: params.username}));
     if (user.username === params.username){
       setIsUser(true);
     }
@@ -123,7 +121,7 @@ function Profile() {
   <div class="tab-pane fade show active" id="nav-public" role="tabpanel" aria-labelledby="nav-public-tab">
   {projects.length > 0 ? projects.map(project => (
         <div key={project.id}>
-          <ProjectItem key={project.id} project={project} isUser={isUser}/>
+          <ProjectItem key={project.id} project={project} isUser={isUser} top={false}/>
         </div>
       )) :  <div className='center-div'>
       <h3>No Public Projects</h3> 
@@ -141,7 +139,7 @@ function Profile() {
   {isUser && <div class="tab-pane fade" id="nav-private" role="tabpanel" aria-labelledby="nav-private-tab">
     {private_projects.length > 0 ? private_projects.map(project => (
         <div key={project.id}>
-          <ProjectItem key={project.id} project={project} isUser={isUser}/>
+          <ProjectItem key={project.id} project={project} isUser={isUser} top={false}/>
           </div> )) : <div className='center-div'>
             <h3>No Priavte Projects</h3> 
             </div> }

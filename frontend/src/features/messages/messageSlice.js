@@ -63,6 +63,9 @@ export const messageSlice = createSlice({
             state.isSuccess = false;
             state.isLoading = false;
             state.message = "";
+        },
+        wipe: (state) => {
+            state = initialState;
         }
     },
     extraReducers: (builder) => {
@@ -102,5 +105,5 @@ export const messageSlice = createSlice({
     }
 });
 
-export const { reset } = messageSlice.actions;
+export const { reset, wipe } = messageSlice.actions;
 export default  messageSlice.reducer;

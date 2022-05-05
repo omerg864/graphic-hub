@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../components/Spinner';
 import {useEffect, useState, useCallback} from 'react';
 import { getUser, reset as user_reset } from '../features/auth/authSlice';
-import { getProjectsByUser, getProject, updateProject, reset } from '../features/projects/projectSlice';
+import { getProjects, getProject, updateProject, reset } from '../features/projects/projectSlice';
 import { useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
 import ImageViewer from "react-simple-image-viewer";
@@ -62,7 +62,7 @@ function Project() {
       name: params.project,
       username: params.username}))
     dispatch(getUser(params.username));
-    dispatch(getProjectsByUser(params.username));
+    dispatch(getProjects({username: params.username}));
         if (user.username === params.username){
           setIsUser(true);
         }

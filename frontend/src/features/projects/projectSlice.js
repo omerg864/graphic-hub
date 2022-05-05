@@ -3,6 +3,7 @@ import projectService from "./projectService";
 
 const initialState = {
     projects: [],
+    top_projects: [],
     private_projects: [],
     private_view_projects: [],
     project: {
@@ -21,13 +22,13 @@ const initialState = {
     message: ""
 }
 
-export const getProjects = createAsyncThunk("projects/getAll", async (thunkAPI) => {
+export const getProjects = createAsyncThunk("projects/getAll", async (query, thunkAPI) => {
     try {
-        const token = thunkAPI.getState().auth.user.token;
-        const response = await projectService.getProjects(token);
+        const response = await projectService.getProjects(query);
         return response.data;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data.message) || error.message;
+        thunkAPI.rejectWithValue({ message });
     }
 });
 
@@ -44,7 +45,7 @@ export const createProject = createAsyncThunk("projects/create", async (data, th
 export const updateProject = createAsyncThunk("projects/update", async (data, thunkAPI) => {
     try {
         const token = thunkAPI.getState().auth.user.token;
-        const response = await projectService.updateProject(data.id, data.content, token);
+        const response = await projectService.updateProject(data.id, data.content, data.type, token);
         return response.data;
     } catch (error) {
         console.log(error);
@@ -72,18 +73,6 @@ export const getProject = createAsyncThunk("projects/get", async (params, thunkA
         }
     } catch (error) {
         console.log(error);
-    }
-});
-
-
-export const getProjectsByUser = createAsyncThunk("projects/userGet", async (username, thunkAPI) => {
-    try {
-        const token = thunkAPI.getState().auth.user.token;
-        const response = await projectService.getProjectsByUser(username, token);
-        return response;
-    } catch (error) {
-        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        return thunkAPI.rejectWithValue({message});
     }
 });
 
@@ -120,6 +109,9 @@ export const projectSlice = createSlice({
             state.isSuccess = false;
             state.isLoading = false;
             state.message = "";
+        },
+        wipe: (state) => {
+            state = initialState;
         }
     },
     extraReducers: (builder) => {
@@ -128,11 +120,19 @@ export const projectSlice = createSlice({
         }).addCase(getProjects.fulfilled, (state, action) => {
             state.isLoading = false;
             state.isSuccess = true;
-            state.projects = action.payload.projects;
+            if (action.meta.arg.type) {
+                if (action.meta.arg.type === "top") {
+                    state.top_projects = action.payload.projects;
+                } else {
+                    state.projects = action.payload.projects;
+                }
+            } else {
+                state.projects = action.payload.projects;
+            }
         }).addCase(getProjects.rejected, (state, action) => {
             state.isLoading = false;
             state.isError = true;
-            state.message = action.payload;
+            state.message = action.payload.message;
             })
             .addCase(createProject.pending, (state) => {
                     state.isLoading = true;
@@ -162,7 +162,13 @@ export const projectSlice = createSlice({
                             state.isLoading = false;
                             state.isSuccess = true;
                             state.project = action.payload.project;
-                            state.projects = [...state.projects.filter(project => project.id !== action.payload.project.id), action.payload.project];
+                            if (action.meta.arg.type) {
+                                if (action.meta.arg.type === "top") {
+                                    state.top_projects = [...state.top_projects.filter(project => project._id !== action.payload.project._id), action.payload.project];
+                                }
+                            } else {
+                                state.projects = [...state.projects.filter(project => project._id !== action.payload.project._id), action.payload.project];
+                            }
                         }).addCase(updateProject.rejected, (state, action) => {
                             state.isLoading = false;
                             state.isError = true;
@@ -179,17 +185,6 @@ export const projectSlice = createSlice({
                                 state.isError = true;
                                 state.message = action.payload;
                                 })
-                                .addCase(getProjectsByUser.pending, (state) => {
-                                    state.isLoading = true;
-                                }).addCase(getProjectsByUser.fulfilled, (state, action) => {
-                                    state.isLoading = false;
-                                    state.isSuccess = true;
-                                    state.projects = action.payload.projects;
-                                }).addCase(getProjectsByUser.rejected, (state, action) => {
-                                    state.isLoading = false;
-                                    state.isError = true;
-                                    state.message = action.payload.message;
-                                    })
                                     .addCase(getPrivateProjects.pending, (state) => {
                                         state.isLoading = true;
                                     }).addCase(getPrivateProjects.fulfilled, (state, action) => {
@@ -214,5 +209,5 @@ export const projectSlice = createSlice({
     }
 });
 
-export const { reset } = projectSlice.actions;
+export const { reset, wipe } = projectSlice.actions;
 export default  projectSlice.reducer;

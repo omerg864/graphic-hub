@@ -4,6 +4,7 @@ import Spinner from '../components/Spinner';
 import {useEffect, useState} from 'react';
 import {searchUser, getUserByid} from '../features/auth/authSlice';
 import { searchProjects } from '../features/projects/projectSlice';
+import ProjectItem from '../components/ProjectItem';
 
 
 
@@ -24,11 +25,9 @@ function Search() {
 
   useEffect(() => {
     dispatch(searchUser(params.searchKey)).then(result => {
-      console.log(result.payload.users);
       setUsersFound(result.payload.users)
     });
     dispatch(searchProjects(params.searchKey)).then(result => {
-      console.log(result.payload.projects);
       setProjectsFound(result.payload.projects)
     });
   }, [dispatch, params]);
@@ -55,10 +54,8 @@ function Search() {
     navigate(`/${username}`);
   }
 
-  const goToProject = (name, id) => {
-    dispatch(getUserByid(id)).then(result => {
-    navigate(`/${result.payload.user.username}/${name}`);
-    });
+  const goToProject = (name, user) => {
+    navigate(`/${user.username}/${name}`);
   }
 
   if (isLoading || isLoading2) {
@@ -97,21 +94,14 @@ function Search() {
   </div>
   <div class="tab-pane fade" id="nav-projects" role="tabpanel" aria-labelledby="nav-projects-tab">
     {projectsFound.length > 0 ? projectsFound.map(project => (
-      <div className='card' key={project.id}>
-        <div className="card-body">
-                  <div className="space">
-                  <h3 className="card-title">{project.name}</h3>
-                  <button className="btn btn-primary" onClick={() => goToProject(project.name, project.user)}>Go to Project</button>
-                  </div>
-                  <div>
-                  <a>{project.description}</a>
-                  </div>
-                  <div>
-                  <a>{project.likes.length} Likes</a>
-                  </div>
-                  <small>{project.images.length} Files</small>
-              </div>
-      </div> )): <div className="center-div"><h4>No projects found</h4></div>}
+      user && project.user._id === user._id ? (
+        <ProjectItem key={project.id} project={project} isUser={true} top={false}/>
+          ) : !user ? (
+            <ProjectItem key={project.id} project={project} isUser={true} top={false}/>
+          ) :  (
+            <ProjectItem key={project.id} project={project} isUser={false} top={false}/>
+          )
+      )): <div className="center-div"><h4>No projects found</h4></div>}
   </div>
   </div>
       </div>

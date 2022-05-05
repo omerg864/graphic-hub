@@ -5,13 +5,14 @@ import { updateProject, reset } from '../features/projects/projectSlice';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import Spinner from './Spinner';
+import { getUserByid } from '../features/auth/authSlice';
 
-function ProjectItem({ project, isUser }) {
+function ProjectItem({ project, isUser, top }) {
     const navigate = useNavigate();
     const params = useParams();
     const dispatch = useDispatch();
     const gotoProject = () => {
-        navigate(`/${params.username}/${project.name}`);
+        navigate(`/${project.user.username}/${project.name}`);
     }
     const { user } = useSelector((state) => state.auth);
 
@@ -22,30 +23,45 @@ function ProjectItem({ project, isUser }) {
     const {projects, isLoading, isSuccess, isError, message} = useSelector((state) => state.project);
 
     useEffect(() => {
+        if (user){
         if (project.likes.includes(user.username)) {
             setIsLiked(true);
         }
+    }
         setLikes(project.likes.length);
     }, []);
 
     useEffect(() => {
-        if (isError){
-            toast.error(message);
-        }
+        if (user){
         if (project.likes.includes(user.username)) {
             setIsLiked(true);
         }
+    }
         setLikes(project.likes.length);
-    }, [project, user, isError, message, setIsLiked, setLikes]);
+    }, [project, user, setIsLiked, setLikes]);
+
+    useEffect(() => {
+        if (isError){
+            toast.error(message);
+            dispatch(reset());
+        }
+    }, [isError, message]);
+
     const unLikelikeProject = () => {
         dispatch(updateProject({
                 id: project._id,
                 content: {},
+                type: top ? 'top' : 'project'
         }));
         setLikes(project.likes.length);
         setIsLiked(!isLiked);
         dispatch(reset());
     }
+
+    const formatDate = (date) => {
+        const d = new Date(date);
+        return d.toLocaleDateString();
+      }
 
     if (isLoading) {
         return <Spinner />;
@@ -65,8 +81,12 @@ function ProjectItem({ project, isUser }) {
                  <button onClick={unLikelikeProject} style={{marginBottom: '5px'}} className="btn"><AiOutlineLike style={{color: '#0d6efd'}}/></button> : null}
                 </div>
                 </div>
-                <p className="card-text">{project.description}</p>
+                <p className="card-text">Description: {project.description}</p>
+                <p>Owner: {project.user.username}</p>
+                <div className="space">
+                <small className="card-text">Last Updated: {formatDate(project.updatedAt)}</small>
                 <button className="btn btn-primary" onClick={gotoProject}>Open Project</button>
+                </div>
             </div>
         </div>
     </>
