@@ -12,7 +12,10 @@ import Project from './pages/Project';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 import Search from './pages/Search';
+import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
+import $ from 'jquery';
+import Popper from 'popper.js';
 
 function App() {
   return (

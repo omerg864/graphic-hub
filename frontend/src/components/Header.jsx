@@ -3,6 +3,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, reset } from '../features/auth/authSlice';
 import { toast } from 'react-toastify';
+import { BiUser } from 'react-icons/bi';
 
 
 function Header() {
@@ -55,13 +56,18 @@ function Header() {
       </ul>
           {user ? (
           <>
-          <ul class="navbar-nav">
-          <li class="nav-item">
-          <button class="btn btn-secondary btn-left" onClick={gotoProfile}> Profile</button>
-          </li>
-          <li class="nav-item">
-            <button class="btn btn-secondary" onClick={onLogout}><FaSignOutAlt /> Logout</button>
-          </li>
+          <ul className="navbar-nav">
+          <li className="nav-item dropstart" style={{marginRight: '5px'}}>
+          <a className="nav-link dropdown-toggle btn btn-secondary" style={{height: '38px', font: 'bold', fontSize: '16px', color: 'white'}} id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <BiUser /> {user.username}
+          </a>
+          <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a className="dropdown-item" href={user.username}>Profile</a></li>
+            <li><a className="dropdown-item" href="chats">Chats</a></li>
+            <li><hr class="dropdown-divider"/></li>
+            <li><button class="dropdown-item" onClick={onLogout}><FaSignOutAlt /> Logout</button></li>
+          </ul>
+        </li>
           </ul>
           </>) : (<>
             <ul class="navbar-nav nav-buttons">
