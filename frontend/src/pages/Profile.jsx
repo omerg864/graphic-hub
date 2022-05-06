@@ -7,6 +7,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import ProjectItem from '../components/ProjectItem';
 import ProfileData from '../components/ProfileData';
+import { MdOutlineLibraryAdd } from 'react-icons/md';
 
 
 function Profile() {
@@ -28,17 +29,14 @@ function Profile() {
 
   const isError2 = user_state.isError;
 
+  const isSuccess2 = user_state.isSuccess;
+
   const [isUser, setIsUser] = useState(false);
 
   const [isFollowed, setIsFollowed] = useState(false);
 
-  const goTOChat = () => {
-    navigate(`/chat/${params.username}`);
-  }
-
-  const follow = () => {
-    dispatch(updateFollow(params.username));
-    setIsFollowed(!isFollowed);
+  const goToNewProject = () => {
+    navigate('/NewProject');
   }
 
   const switchToPrivateView = () => {
@@ -90,6 +88,16 @@ function Profile() {
   }, [dispatch, params, user, setIsFollowed]);
 
   useEffect(() => {
+    if (isSuccess) {
+      dispatch(reset());
+    }
+    if (isSuccess2){
+      dispatch(user_reset());
+    }
+  }, [isSuccess, isSuccess2]);
+
+
+  useEffect(() => {
     if (isError){
       toast.error(message);
       dispatch(reset());
@@ -109,7 +117,10 @@ function Profile() {
     <div className='row-div'>
       <ProfileData friend={friend} user={user} isChat={false}/>
       <div className="container">
-      <h2>Projects</h2>
+        <div className='space'>
+        <h2>Projects</h2>
+        <button className='btn btn-success' style={{height: '40px'}} onClick={goToNewProject}><a><MdOutlineLibraryAdd  style={{color: 'white'}} /> New</a></button>
+        </div>
       <nav>
   <div class="nav nav-tabs" id="nav-tab" role="tablist">
     <button class="nav-link active" id="nav-public-tab" onClick={switchToPublic} data-bs-toggle="tab" data-bs-target="#nav-public" type="button" role="tab" aria-controls="nav-public" aria-selected="true">Public</button>

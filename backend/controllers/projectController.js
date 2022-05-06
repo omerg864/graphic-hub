@@ -2,6 +2,8 @@ import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
 import Project from '../models/projectModel.js';
 
+
+
 const populate_user = {path: 'user', select: ['-password', '-__v', '-createdAt', '-updatedAt', '-verified']};
 
 const getProjects = asyncHandler(async (req, res, next) => {
@@ -53,7 +55,7 @@ const getProjects = asyncHandler(async (req, res, next) => {
 });
 
 const addProject = asyncHandler(async (req, res, next) => {
-    const {name, description, visability, images} = req.body;
+    const {name, description, visibility, images} = req.body;
     const checked_project = await Project.find({name: name, user: req.user});
     if (checked_project.length > 0) {
         res.status(400)
@@ -63,7 +65,7 @@ const addProject = asyncHandler(async (req, res, next) => {
         name: name,
         description: description,
         user: req.user,
-        visability: visability,
+        visability: visibility,
         images: images
     });
     res.status(200).json({

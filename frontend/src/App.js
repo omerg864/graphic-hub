@@ -13,6 +13,7 @@ import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 import Search from './pages/Search';
 import Chats from './pages/Chats';
+import NewProject from './pages/NewProject';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import $ from 'jquery';
@@ -36,6 +37,7 @@ function App() {
         <Route path="/settings" element={<Settings/>} />
         <Route path="/search/:searchKey" element={<Search/>} />
         <Route path="/chats" element={<Chats/>} />
+        <Route path="/NewProject" element={<NewProject/>} />
       </Routes>
     </div>
     </Router>

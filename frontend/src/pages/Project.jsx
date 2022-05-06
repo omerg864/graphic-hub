@@ -31,6 +31,8 @@ function Project() {
 
   const isError2 = user_state.isError;
 
+  const isSuccess2 = user_state.isSuccess;
+
   const [isLiked, setIsLiked] = useState(false);
 
   const [likes, setLikes] = useState(0);
@@ -67,6 +69,15 @@ function Project() {
           setIsUser(true);
         }
   }, [dispatch, params, setIsLiked, setLikes, user]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(reset());
+    }
+    if (isSuccess2){
+      dispatch(user_reset());
+    }
+  }, [isSuccess, isSuccess2]);
 
   useEffect(() => {
     if (isError){
