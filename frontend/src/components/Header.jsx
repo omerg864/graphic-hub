@@ -30,6 +30,10 @@ function Header() {
     navigate(`${user.username}`);
   }
 
+  const goToChats = () => {
+    navigate('/chats');
+  }
+
   const search = () => {
     var search_txt = document.getElementById('search_txt').value;
     if (search_txt.length > 0) {
@@ -62,8 +66,8 @@ function Header() {
             <BiUser /> {user.username}
           </a>
           <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a className="dropdown-item" href={user.username}>Profile</a></li>
-            <li><a className="dropdown-item" href="chats">Chats</a></li>
+            <li><button className="dropdown-item" onClick={gotoProfile}>Profile</button></li>
+            <li><button className="dropdown-item" onClick={goToChats}>Chats</button></li>
             <li><hr class="dropdown-divider"/></li>
             <li><button class="dropdown-item" onClick={onLogout}><FaSignOutAlt /> Logout</button></li>
           </ul>

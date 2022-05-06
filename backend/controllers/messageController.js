@@ -4,11 +4,71 @@ import Message from '../models/messageModel.js';
 
 const getMessages = asyncHandler(async (req, res, next) => {
     const {username} = req.params;
+    const query = req.query;
     const receiver = await User.findOne({username});
-    const messages = await Message.find().or([{sender: req.user._id, receiver: receiver._id}, {sender: receiver._id, receiver: req.user._id}]).sort({createdAt: 1});
+    const messages = await Message.find().or(
+        [{sender: req.user._id, receiver: receiver._id}, {sender: receiver._id, receiver: req.user._id}]
+        ).sort({createdAt: 1});
     res.status(200).json({
         success: true,
         messages: messages
+    });
+});
+
+const getChats = asyncHandler(async (req, res, next) => {
+    const chats = await Message.find({
+        $or: [{sender: req.user._id}, {receiver: req.user._id}]
+    }).populate('sender').populate('receiver').sort({createdAt: -1});
+    const chats_sorted = [];
+    const ids = []
+    chats.forEach(chat => {
+        console.log(chat);
+        if (chat.sender._id.toString() != req.user._id.toString()) {
+            if (!ids.includes(chat.sender._id.toString())) {
+                ids.push(chat.sender._id.toString());
+                chats_sorted.push({
+                    _id : chat._id,
+                    text: chat.text,
+                    createdAt: chat.createdAt,
+                    recived: true,
+                    user: chat.sender
+                });
+        }
+    }
+    if (chat.receiver._id.toString() != req.user._id.toString()) {
+        if (!ids.includes(chat.receiver._id.toString())) {
+            ids.push(chat.receiver._id.toString());
+            chats_sorted.push({
+                _id : chat._id,
+                text: chat.text,
+                createdAt: chat.createdAt,
+                recived: false,
+                user: chat.receiver
+            });
+        }
+    }
+    });
+
+    res.status(200).json({
+        success: true,
+        chats: chats_sorted
+    });
+});
+
+const deleteChat = asyncHandler(async (req, res, next) => {
+    const {username} = req.params;
+    const user = await User.findOne({username});
+    const messages = await Message.find().or(
+        [{sender: req.user._id, receiver: user._id}, {sender: user._id, receiver: req.user._id}]
+    )
+    messages.forEach(message => {
+        message.remove();
+    }
+    );
+    res.status(200).json({
+        success: true,
+        message: 'Chat deleted',
+        username: user.username,
     });
 });
 
@@ -50,4 +110,4 @@ const deleteMessage = asyncHandler(async (req, res, next) => {
     });
 });
 
-export {getMessages, sendMessage, deleteMessage};
+export {getMessages, sendMessage, deleteMessage, getChats, deleteChat};

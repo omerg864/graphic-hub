@@ -3,6 +3,7 @@ import messageService from "./messageService";
 
 const initialState = {
     messages: [],
+    chats: [],
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -24,6 +25,32 @@ export const getMessages = createAsyncThunk("messages/get", async (username, thu
     }
 });
 
+
+export const getChats = createAsyncThunk("messages/getChats", async (_, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().auth.user.token;
+        const response = await messageService.getChats(token);
+        return response.data;
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
+    }
+});
+
+
+export const deleteChats = createAsyncThunk("messages/deleteChats", async (username, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().auth.user.token;
+        const response = await messageService.deleteChats(username, token);
+        return response.data;
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
+    }
+});
+
+
+
 export const sendMessage = createAsyncThunk("messages/send", async (data, thunkAPI) => {
     try {
         const token = thunkAPI.getState().auth.user.token;
@@ -39,10 +66,10 @@ export const sendMessage = createAsyncThunk("messages/send", async (data, thunkA
     }
 });
 
-export const deleteMessage = createAsyncThunk("messages/delete", async (id, thunkAPI) => {
+export const deleteMessage = createAsyncThunk("messages/delete", async (username, thunkAPI) => {
     try {
         const token = thunkAPI.getState().auth.user.token;
-        const response = await messageService.deleteMessage(id, token);
+        const response = await messageService.deleteMessage(username, token);
         if (response.status === 200) {
             return response.data;
         } else {
@@ -100,8 +127,28 @@ export const messageSlice = createSlice({
                     }).addCase(deleteMessage.rejected, (state, action) => {
                         state.isLoading = false;
                         state.isError = true;
-                        state.message = action.payload;
+                        state.message = action.payload.message;
                         })
+                        .addCase(getChats.pending, (state) => {
+                            state.isLoading = true;
+                        }).addCase(getChats.fulfilled, (state, action) => {
+                            state.isLoading = false;
+                            state.isSuccess = true;
+                            state.chats = action.payload.chats;
+                        }).addCase(getChats.rejected, (state, action) => {
+                            state.isLoading = false;
+                            state.isError = true;
+                            })
+                            .addCase(deleteChats.pending, (state) => {
+                                state.isLoading = true;
+                            }).addCase(deleteChats.fulfilled, (state, action) => {
+                                state.isLoading = false;
+                                state.isSuccess = true;
+                                state.chats = action.payload.chats.filter(chat => chat.user.username !== action.payload.username);
+                            }).addCase(deleteChats.rejected, (state, action) => {
+                                state.isLoading = false;
+                                state.isError = true;
+                                })
     }
 });
 

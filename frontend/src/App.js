@@ -12,6 +12,7 @@ import Project from './pages/Project';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 import Search from './pages/Search';
+import Chats from './pages/Chats';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import $ from 'jquery';
@@ -34,6 +35,7 @@ function App() {
         <Route path="/chat/:reciever" element={<Chat/>} />
         <Route path="/settings" element={<Settings/>} />
         <Route path="/search/:searchKey" element={<Search/>} />
+        <Route path="/chats" element={<Chats/>} />
       </Routes>
     </div>
     </Router>
