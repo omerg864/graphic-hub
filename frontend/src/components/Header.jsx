@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logout, reset } from '../features/auth/authSlice';
 import { toast } from 'react-toastify';
 import { BiUser } from 'react-icons/bi';
+import {BsFillChatSquareTextFill} from 'react-icons/bs';
+import { CgProfile } from 'react-icons/cg';
 
 
 function Header() {
@@ -66,8 +68,8 @@ function Header() {
             <BiUser /> {user.username}
           </a>
           <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><button className="dropdown-item" onClick={gotoProfile}>Profile</button></li>
-            <li><button className="dropdown-item" onClick={goToChats}>Chats</button></li>
+            <li><button className="dropdown-item" onClick={gotoProfile}><CgProfile /> Profile</button></li>
+            <li><button className="dropdown-item" onClick={goToChats}><BsFillChatSquareTextFill /> Chats</button></li>
             <li><hr class="dropdown-divider"/></li>
             <li><button class="dropdown-item" onClick={onLogout}><FaSignOutAlt /> Logout</button></li>
           </ul>

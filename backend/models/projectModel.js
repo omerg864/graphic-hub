@@ -14,7 +14,7 @@ const projectScheme = mongoose.Schema({
         ref: 'User',
         required: true
     },
-    visability: {
+    visibility: {
         type: String,
         required: true
     },

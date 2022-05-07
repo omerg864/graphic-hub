@@ -90,6 +90,15 @@ body {
   width: 100%;
 }
 
+.image-container {
+  position: relative;
+  margin-right: 10px;
+}
+.switch-image{
+  position: absolute;
+  bottom: 10px;
+}
+
 .styles-module_wrapper__1I_qj {
   margin-top: 20px;
 }

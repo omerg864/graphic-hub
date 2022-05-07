@@ -78,7 +78,7 @@ function Profile() {
   useEffect(() => {
     dispatch(getPrivateProjects());
     dispatch(getUser(params.username));
-    dispatch(getProjects({username: params.username}));
+    dispatch(getProjects({username: params.username, orderBy: 'updatedAt'}));
     if (user.username === params.username){
       setIsUser(true);
     }

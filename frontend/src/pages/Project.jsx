@@ -8,6 +8,8 @@ import { toast } from 'react-toastify';
 import ImageViewer from "react-simple-image-viewer";
 import ProfileData from '../components/ProfileData';
 import {AiFillLike, AiOutlineLike} from 'react-icons/ai';
+import { TiEdit } from 'react-icons/ti';
+import { useNavigate } from "react-router-dom";
 
 
 function Project() {
@@ -15,6 +17,7 @@ function Project() {
   const params = useParams();
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [currentImage, setCurrentImage] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
@@ -57,6 +60,10 @@ function Project() {
     setIsLiked(!isLiked);
     setLikes(project.likes.length);
     dispatch(reset());
+}
+
+const goToEdit = () => {
+  navigate(`/${params.username}/${params.project}/edit`);
 }
 
   useEffect(() => {
@@ -109,16 +116,24 @@ function Project() {
       <ProfileData friend={friend} user={user} isChat={false}/>
     </div>
         <div style={{width: "100%"}}>
-          <div className='center-div' style={{marginBottom: '10px'}}>
-            <h1>Project</h1>
-        <h2>{project.name}</h2>
-        </div>
-        <div className='end-div'>
-                <small style={{marginBottom: '10px'}}>{likes} Likes</small>
-                {!isUser ? isLiked ? <button onClick={unLikelikeProject} style={{marginBottom: '5px'}} className="btn"><AiFillLike style={{color: '#0d6efd'}}/></button> :
-                 <button onClick={unLikelikeProject} style={{marginBottom: '5px'}} className="btn"><AiOutlineLike style={{color: '#0d6efd'}}/></button> : null}
-                </div>
+          {isUser ? <div className='space' style={{width: "100%"}}>
+            <div></div>
+          <h1>Project</h1>
+          <button type='button' className='btn btn-primary' onClick={goToEdit}><TiEdit /> Edit</button>
+          </div> : <div className='center-div'><h1>Project</h1></div>}
+          <div className='space' style={{width: "100%"}}>
+            <div></div>
+            <h2>{project.name}</h2>
+            {isUser ? <div style={{width : "60px"}}></div> : <div></div>}
+          </div>
+          <div className='space' style={{width: "100%"}}>
         <p style={{marginBottom: '20px'}}>{project.description}</p>
+        <div>
+                <small>{likes} Likes</small>
+                {!isUser ? isLiked ? <button onClick={unLikelikeProject} className="btn"><AiFillLike style={{color: '#0d6efd'}}/></button> :
+                 <button onClick={unLikelikeProject} className="btn"><AiOutlineLike style={{color: '#0d6efd'}}/></button> : null}
+                </div>
+          </div>
         <div className='center-div' style={{marginBottom: '30px'}}>
         <h3>Project Images</h3>
         </div>

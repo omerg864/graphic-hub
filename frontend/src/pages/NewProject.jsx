@@ -48,26 +48,24 @@ function NewProject() {
     }
   return (
     <>
-    <div className=" content-section">
+    <div className='center-div'>
+    <div className="content-section" style={{width: 'fit-content'}}>
     <div className="center-div">
         <h1>Create New Project</h1>
-        </div>
         <form>
             <div class="mb-3">
-                <label for="project-name" style={{marginRight: '5px'}}>Project Name: </label>
+                <p style={{fontWeight: '600'}}>Project Name</p>
         <input type="text" placeholder="Project Name" id="project-name" name="project-name" onChange={checkProjectName}/>
         </div>
         <div class="mb-3">
-            <label for="project-description" style={{marginRight: '5px'}}>Project Description: </label>
+            <p style={{fontWeight: '600'}}>Project Description</p>
         <textarea placeholder="Project Description" style={{resize: 'both'}} id="project-description" name="project-description"/>
         </div>
         <div class="mb-3">
-        <label htmlFor="project_images" style={{marginRight: '5px'}}>Images: </label>
+        <p style={{fontWeight: '600'}}>Images</p>
         <input type="file" id="project_images" multiple name="project_images" />
         </div>
-        <div>
-            <label style={{marginBottom: '5px'}}>Project Visibility:</label>
-        </div>
+        <p style={{fontWeight: '600'}}>Project Visibility</p>
         <div class="form-check">
         <input class="form-check-input" type="radio" name="project_visibility" id="project_visibility1" checked/>
         <label class="form-check-label" for="project_visibility1">
@@ -90,6 +88,8 @@ function NewProject() {
         <button className="btn btn-primary" type="button" onClick={submitForm}>Create</button>
         </div>
         </form>
+        </div>
+        </div>
         </div>
     </>
   )

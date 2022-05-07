@@ -18,6 +18,7 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import $ from 'jquery';
 import Popper from 'popper.js';
+import EditProject from './pages/EditProject';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
         <Route path="/search/:searchKey" element={<Search/>} />
         <Route path="/chats" element={<Chats/>} />
         <Route path="/NewProject" element={<NewProject/>} />
+        <Route path="/:username/:project/edit" element={<EditProject/>} />
       </Routes>
     </div>
     </Router>

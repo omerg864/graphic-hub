@@ -9,7 +9,7 @@ const initialState = {
     project: {
         name: "",
         description: "",
-        visability: "",
+        visibility: "",
         images: [],
         user: "",
         createdAt: "",

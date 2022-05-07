@@ -10,7 +10,7 @@ const getProjects = asyncHandler(async (req, res, next) => {
     const query = req.query;
     var count = Object.keys(query).length;
     if (count === 0){
-        var projects = await Project.find({visability: "public"}).populate(populate_user);
+        var projects = await Project.find({visibility: "public"}).populate(populate_user).sort({updatedAt: -1});
         res.status(200).json({
             success: true,
             projects: projects
@@ -22,26 +22,26 @@ const getProjects = asyncHandler(async (req, res, next) => {
                 res.status(404);
                 throw new Error('User not found');
             }
-            var projects = await Project.find({user: user, visability: "public"}).populate(populate_user).sort({[query.orderBy]: -1});
+            var projects = await Project.find({user: user, visibility: "public"}).populate(populate_user).sort({[query.orderBy]: -1});
         } else if (Object.keys(query).includes('username')) {
             const user = await User.findOne({username: query.username});
             if (!user) {
                 res.status(404);
                 throw new Error('User not found');
             }
-            var projects = await Project.find({user: user, visability: "public"}).populate(populate_user);
+            var projects = await Project.find({user: user, visibility: "public"}).populate(populate_user);
         } else if (Object.keys(query).includes('orderBy') && Object.keys(query).includes('following')) {
             const users = await User.find({username: {$in: query.following.split(',')}});
             var ids = [];
             users.forEach(user => {
                 ids.push(user._id);
             });
-            var projects = await Project.find({user: {$in: ids}, visability: "public"}).populate(populate_user).sort({[query.orderBy]: -1});
+            var projects = await Project.find({user: {$in: ids}, visibility: "public"}).populate(populate_user).sort({[query.orderBy]: -1});
         } else if (Object.keys(query).includes('following')) {
             const users = await User.find({username: {$in: query.following.split(',')}});
-            var projects = await Project.find({user: {$in: users._id}, visability: "public"}).populate(populate_user);
+            var projects = await Project.find({user: {$in: users._id}, visibility: "public"}).populate(populate_user);
         } else if (Object.keys(query).includes('orderBy')) {
-            var projects = await Project.find({visability: "public"}).populate(populate_user).sort({[query.orderBy]: -1});
+            var projects = await Project.find({visibility: "public"}).populate(populate_user).sort({[query.orderBy]: -1});
         }
         else {
             res.status(400);
@@ -65,7 +65,7 @@ const addProject = asyncHandler(async (req, res, next) => {
         name: name,
         description: description,
         user: req.user,
-        visability: visibility,
+        visibility: visibility,
         images: images
     });
     res.status(200).json({
@@ -89,20 +89,20 @@ const updateProject = asyncHandler(async (req, res, next) => {
     if (count > 0) {
         var updatedProject = await Project.findByIdAndUpdate(id, {
             ...req.body
-        }, {new: true});
+        }, {new: true}).populate(populate_user);
     } else {
         if (project.likes.includes(req.user.username)) {
             var updatedProject = await Project.findByIdAndUpdate(id, {
                 $pull: {
                     likes: req.user.username
                 }
-            }, {new: true, timestamps: false});
+            }, {new: true, timestamps: false}).populate(populate_user);
         } else {
             var updatedProject = await Project.findByIdAndUpdate(id, {
                 $push: {
                     likes: req.user.username
                 }
-            }, {new: true, timestamps: false});
+            }, {new: true, timestamps: false}).populate(populate_user);
         }
     }
     res.status(200).json({
@@ -132,12 +132,12 @@ const deleteProject = asyncHandler(async (req, res, next) => {
 const getProject = asyncHandler(async (req, res, next) => {
     const {name, username} = req.params;
     const user = await User.findOne({username: username});
-    const project = await Project.findOne({name: name, user: user});
+    const project = await Project.findOne({name: name, user: user}).populate(populate_user);
     if (!project) {
         res.status(404)
         throw new Error('Project not found');
     }
-    if (project.user.toString() !== req.user._id.toString() && project.visability !== 'public') {
+    if (project.user._id.toString() !== req.user._id.toString() && project.visibility !== 'public') {
         res.status(401)
         throw new Error('You are not authorized to view this project');
     }
@@ -148,7 +148,7 @@ const getProject = asyncHandler(async (req, res, next) => {
 });
 
 const getPrivateProjects = asyncHandler(async (req, res, next) => {
-    const projects = await Project.find({user: req.user, visability: 'private'});
+    const projects = await Project.find({user: req.user, visibility: 'private'}).populate(populate_user);
     res.status(200).json({
         success: true,
         projects: projects
@@ -161,7 +161,7 @@ const searchProjects = asyncHandler(async (req, res, next) => {
         [
         {name: {$regex: query, $options: 'i'}},
         {description: {$regex: query, $options: 'i'}}
-    ], $and : [{visability: 'public'}]}).populate(populate_user);
+    ], $and : [{visibility: 'public'}]}).populate(populate_user);
     res.status(200).json({
         success: true,
         projects: projects

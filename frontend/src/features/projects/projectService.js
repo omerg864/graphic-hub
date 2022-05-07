@@ -51,7 +51,41 @@ const createProject = async (data, token) => {
 }
 
 const updateProject = async (id, data, type, token) => {
-    try {
+    if (type === 'change') {
+        try {
+            var images_urls = [];
+            const uploaders = Object.values(data.new_images).map(file => {
+                // Initial FormData
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("upload_preset", process.env.REACT_APP_PRESENT_NAME); // Replace the preset name with your own
+                formData.append("api_key", process.env.REACT_APP_CLOUDINARY_API_KEY); // Replace API key with your own Cloudinary key
+                formData.append("timestamp", (Date.now() / 1000) | 0);
+                
+                // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
+                return axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/image/upload`, formData, {
+                  headers: { "X-Requested-With": "XMLHttpRequest" },
+                }).then(response => {
+                  const data = response.data;
+                  const fileURL = data.secure_url // You should store this URL for future references in your app
+                    images_urls.push(fileURL);
+                })
+              });
+            
+              // Once all the files are uploaded 
+              await axios.all(uploaders);
+              data.images = data.images.concat(images_urls);
+                const response = await axios.put(API_URL + id + `?${type}`, data, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        accepts:"application/json"
+                    }
+                });
+                return response;
+        } catch (error) {
+            console.log(error);
+        }
+    } else {
         const response = await axios.put(API_URL + id + `?${type}`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -59,8 +93,6 @@ const updateProject = async (id, data, type, token) => {
             }
         });
         return response;
-    } catch (error) {
-        console.log(error);
     }
 }
 

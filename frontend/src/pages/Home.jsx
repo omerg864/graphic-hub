@@ -21,14 +21,23 @@ function Home() {
   const message2 = user_state.message;
   const isLoading2 = user_state.isLoading;
   const isError2 = user_state.isError;
+  const isSuccess2 = user_state.isSuccess;
 
   useEffect(() => {
     dispatch(getProjects({orderBy: 'likes', type: 'top'}));
     if (user) {
     dispatch(getProjects({orderBy: 'UpdatedAt', type: 'follow', following: user.following}));
     }
-    dispatch(reset());
   }, [dispatch, project]);
+
+  useEffect(() => {
+    if (isSuccess){
+      dispatch(reset());
+    }
+    if (isSuccess2) {
+      dispatch(user_reset());
+    }
+  }, [isSuccess, isSuccess2]);
 
   useEffect(() => {
     if (isError) {
