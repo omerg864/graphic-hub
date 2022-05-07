@@ -1,6 +1,6 @@
 import Spinner from "../components/Spinner";
 import { useEffect, useState } from "react";
-import { getProject, updateProject, reset } from "../features/projects/projectSlice";
+import { getProject, updateProject, reset, deleteProject } from "../features/projects/projectSlice";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -53,6 +53,12 @@ function EditProject() {
             type: 'change'
     }));
     navigate(`/${user.username}/${project.name}`);
+    }
+
+    const deletethisProject = () => {
+        dispatch(deleteProject(project._id.toString()));
+        navigate(`/${user.username}`);
+        toast.success("Project deleted successfully");
     }
 
     const changeName = (e) => {
@@ -147,6 +153,10 @@ function EditProject() {
         <div style={{marginTop: '10px'}}>
         <button className="btn btn-primary" type="button" onClick={changeProject}>Change</button>
         </div>
+        </div>
+        <div className="center-div delete-zone" style={{marginTop: '20px'}}>
+            <h5>Delete this Project?</h5>
+        <button className="btn btn-danger" type="button" onClick={deletethisProject}>Delete</button>
         </div>
         </>
     ): 
