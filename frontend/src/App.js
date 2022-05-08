@@ -19,6 +19,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import $ from 'jquery';
 import Popper from 'popper.js';
 import EditProject from './pages/EditProject';
+import NewToken from './pages/NewToken';
+import EditToken from './pages/EditToken';
 
 function App() {
   return (
@@ -40,6 +42,8 @@ function App() {
         <Route path="/chats" element={<Chats/>} />
         <Route path="/NewProject" element={<NewProject/>} />
         <Route path="/:username/:project/edit" element={<EditProject/>} />
+        <Route path="/NewToken" element={<NewToken/>} />
+        <Route path="/EditToken/:id" element={<EditToken/>} />
       </Routes>
     </div>
     </Router>

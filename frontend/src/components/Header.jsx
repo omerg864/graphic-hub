@@ -4,8 +4,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logout, reset } from '../features/auth/authSlice';
 import { toast } from 'react-toastify';
 import { BiUser } from 'react-icons/bi';
-import {BsFillChatSquareTextFill} from 'react-icons/bs';
+import {BsChatSquareText} from 'react-icons/bs';
 import { CgProfile } from 'react-icons/cg';
+import { FiSettings } from 'react-icons/fi';
 
 
 function Header() {
@@ -34,6 +35,10 @@ function Header() {
 
   const goToChats = () => {
     navigate('/chats');
+  }
+
+  const goToSettings = () => {
+    navigate('/settings');
   }
 
   const search = () => {
@@ -69,7 +74,8 @@ function Header() {
           </a>
           <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><button className="dropdown-item" onClick={gotoProfile}><CgProfile /> Profile</button></li>
-            <li><button className="dropdown-item" onClick={goToChats}><BsFillChatSquareTextFill /> Chats</button></li>
+            <li><button className="dropdown-item" onClick={goToChats}><BsChatSquareText /> Chats</button></li>
+            <li><button className="dropdown-item" onClick={goToSettings}><FiSettings /> Settings</button></li>
             <li><hr className="dropdown-divider"/></li>
             <li><button className="dropdown-item" onClick={onLogout}><FaSignOutAlt /> Logout</button></li>
           </ul>

@@ -3,8 +3,11 @@ import Spinner from '../components/Spinner';
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getViewTokens, reset as token_reset } from '../features/viewTokens/viewTokenSlice';
+import { getViewTokens, deleteViewToken, reset as token_reset } from '../features/viewTokens/viewTokenSlice';
 import { reset, updateUser } from '../features/auth/authSlice';
+import { GiToken } from 'react-icons/gi';
+import {BsTrash} from 'react-icons/bs';
+import { TiEdit } from 'react-icons/ti';
 
 
 function Settings() {
@@ -23,7 +26,7 @@ function Settings() {
   });
 
   const view_tokens_state = useSelector((state) => state.viewToken);
-  const view_tokens = view_tokens_state.view_tokens;
+  const viewTokens = view_tokens_state.viewTokens;
   const isLoading2 = view_tokens_state.isLoading;
   const isError2 = view_tokens_state.isError;
   const isSuccess2 = view_tokens_state.isSuccess;
@@ -45,6 +48,26 @@ function Settings() {
       ...prevState, [e.target.name] : e.target.value,
   })
   )
+  }
+
+  const formatDate = (date) => {
+    const d = new Date(date);
+    if (d.getFullYear() === 9999){
+      return 'Never';
+    }
+    return d.toLocaleDateString();
+  }
+
+  const goToNewToken = () => {
+    navigate('/NewToken');
+  }
+
+  const goToEditToken = (id) => {
+    navigate(`/EditToken/${id}`);
+  }
+
+  const deleteToken = (id) => {
+    dispatch(deleteViewToken(id));
   }
 
   const saveUser = () => {
@@ -134,7 +157,33 @@ function Settings() {
                 </div>
                 </div>
         </div>
-          <div className="tab-pane fade" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">...</div>
+          <div className="tab-pane fade" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+          <div className="card">
+          <div className="card-body">
+            <div className='space'>
+              <h5 className="card-title">Tokens</h5>
+              <button className="btn btn-success" type='button' onClick={goToNewToken}><GiToken /> New</button>
+              </div>
+              <div style={{marginTop: '20px'}}>
+              {viewTokens.map((token) => (
+                <div className='card' key={token.id} style={{marginBottom: '10px', padding: '10px'}}>
+                    <h4>{token.name}</h4>
+                  <div className="form-group">
+                    <input type="text" className="form-control" name="token" placeholder="Token" value={token.token} disabled />
+                  </div>
+                  <div className="form-group">
+                    <a>Token expire date: {formatDate(token.expires)}</a>
+                  </div>
+                  <div className='space' style={{marginTop: '10px'}}>
+                    <button className="btn btn-primary" type='button' onClick={() => goToEditToken(token._id)}><TiEdit /> Edit</button>
+                    <button className="btn btn-danger" type='button' onClick={() => deleteToken(token._id)}><BsTrash /> Delete</button>
+                  </div>
+                  </div>
+              ))}
+              </div>
+              </div>
+          </div>
+          </div>
         </div>
       </div>
     </>) 

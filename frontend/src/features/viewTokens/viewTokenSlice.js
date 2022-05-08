@@ -3,6 +3,12 @@ import viewTokenService from "./viewTokenService";
 
 const initialState = {
     viewTokens: [],
+    token: {
+        token: "",
+        name: "",
+        expires: new Date(),
+        user: ""
+    },
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -13,6 +19,17 @@ export const getViewTokens = createAsyncThunk("viewTokens/getAll", async (_,thun
     try {
         const token = thunkAPI.getState().auth.user.token;
         const response = await viewTokenService.getViewTokens(token);
+        return response.data;
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
+    }
+});
+
+export const getViewToken = createAsyncThunk("viewTokens/get", async (id, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().auth.user.token;
+        const response = await viewTokenService.getViewToken(id, token);
         return response.data;
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -36,7 +53,7 @@ export const createViewToken = createAsyncThunk("viewTokens/create", async (data
 export const updateViewToken = createAsyncThunk("viewTokens/update", async (data, thunkAPI) => {
     try {
         const token = thunkAPI.getState().auth.user.token;
-        const response = await viewTokenService.updateViewToken(data, token);
+        const response = await viewTokenService.updateViewToken(data.id, data, token);
         return response.data;
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -111,7 +128,7 @@ export const viewTokenSlice = createSlice({
                     }).addCase(deleteViewToken.fulfilled, (state, action) => {
                         state.isLoading = false;
                         state.isSuccess = true;
-                        state.viewTokens = state.viewTokens.filter(token => token.id !== action.payload.id);
+                        state.viewTokens = state.viewTokens.filter(token => token._id !== action.payload.id);
                     }).addCase(deleteViewToken.rejected, (state, action) => {
                         state.isLoading = false;
                         state.isError = true;
@@ -122,7 +139,7 @@ export const viewTokenSlice = createSlice({
                         }).addCase(updateViewToken.fulfilled, (state, action) => {
                             state.isLoading = false;
                             state.isSuccess = true;
-                            state.viewTokens = [...state.viewTokens.filter(token => token.id !== action.payload.token.id), action.payload.token];
+                            state.viewTokens = [...state.viewTokens.filter(token => token._id !== action.payload.token._id), action.payload.token];
                         }).addCase(updateViewToken.rejected, (state, action) => {
                             state.isLoading = false;
                             state.isError = true;
@@ -139,6 +156,17 @@ export const viewTokenSlice = createSlice({
                                 state.isError = true;
                                 state.message = action.payload.message;
                                 })
+                                .addCase(getViewToken.pending, (state) => {
+                                    state.isLoading = true;
+                                }).addCase(getViewToken.fulfilled, (state, action) => {
+                                    state.isLoading = false;
+                                    state.isSuccess = true;
+                                    state.token = action.payload.token;
+                                }).addCase(getViewToken.rejected, (state, action) => {
+                                    state.isLoading = false;
+                                    state.isError = true;
+                                    state.message = action.payload.message;
+                                    })
     }
 });
 

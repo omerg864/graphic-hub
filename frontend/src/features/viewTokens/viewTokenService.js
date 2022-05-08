@@ -14,6 +14,16 @@ const getViewTokens = async (token) => {
     return response;
 }
 
+const getViewToken = async (id, token) => {
+    const response = await axios.get(API_URL + id, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            accepts:"application/json"
+        }
+    });
+    return response;
+}
+
 
 const createViewToken = async (data, token) => {
     const response = await axios.post(API_URL, data, {
@@ -26,8 +36,8 @@ const createViewToken = async (data, token) => {
 }
 
 
-const updateViewToken = async (data, token) => {
-    const response = await axios.post(API_URL, data, {
+const updateViewToken = async (id, data, token) => {
+    const response = await axios.put(API_URL + id, data, {
         headers: {
             Authorization: `Bearer ${token}`,
             accepts:"application/json"
@@ -66,7 +76,8 @@ const viewTokenService = {
     createViewToken,
     updateViewToken,
     deleteViewToken,
-    VerifyViewToken
+    VerifyViewToken,
+    getViewToken
 };
 
 export default viewTokenService;
