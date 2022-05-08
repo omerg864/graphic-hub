@@ -1,6 +1,14 @@
 import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
 import Project from '../models/projectModel.js';
+import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config({ 
+    cloud_name: process.env.CLOUD_NAME, 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true
+  });
 
 
 
@@ -87,6 +95,25 @@ const updateProject = asyncHandler(async (req, res, next) => {
         throw new Error('You are not authorized to update this project');
     }
     if (count > 0) {
+        req.body.deleteimages.forEach(image => {
+            var public_id = "graphic hub/" + image.split('/').pop().split('.')[0];
+            console.log(public_id);
+            try {
+                cloudinary.uploader.destroy(public_id, {
+                    cloud_name: process.env.CLOUD_NAME, 
+                    api_key: process.env.CLOUDINARY_API_KEY, 
+                    api_secret: process.env.CLOUDINARY_API_SECRET,
+                    secure: true,
+                    invalidate: true,
+                    resource_type: 'image'
+                }, function(error,result) {
+                    console.log(result, error) }
+                );
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
         var updatedProject = await Project.findByIdAndUpdate(id, {
             ...req.body
         }, {new: true}).populate(populate_user);

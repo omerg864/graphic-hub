@@ -24,7 +24,7 @@ function EditProject() {
     const [projectDescription, setProjectDescription] = useState("")
 
 
-    const changeProject = () => {
+    const changeProject = async () => {
         console.log("asfasfasf")
         const name = document.getElementById("project-name").value;
         const description = document.getElementById("project-description").value;
@@ -51,9 +51,12 @@ function EditProject() {
                 deleteimages,
             },
             type: 'change'
-    }));
-    navigate(`/${user.username}/${project.name}`);
-    }
+        })).then((result) => {
+            if (result.payload.success) {
+                navigate(`/${user.username}/${project.name}`);
+            }
+        });
+}
 
     const deletethisProject = () => {
         dispatch(deleteProject(project._id.toString()));
