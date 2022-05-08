@@ -57,7 +57,7 @@ function ProfileData({ friend, user, isChat }) {
       <div>
         {isUser && <button className="btn btn-primary btn-block">Edit Profile</button>}
         {!isUser && <div>
-        {isFollowed ? <button className="btn btn-primary btn-block" onClick={follow}>Unfollow</button> : <button className="btn btn-primary btn-block" onClick={follow}>Follow</button>}
+         {!isChat && (isFollowed ? <button className="btn btn-primary btn-block" onClick={follow}>Unfollow</button> : <button className="btn btn-primary btn-block" onClick={follow}>Follow</button>)} 
         {!isChat && <button className="btn btn-success btn-block" onClick={goTOChat}>Chat</button>}
          </div>}
       </div>

@@ -1,8 +1,10 @@
-import React from 'react'
+
 
 function Settings() {
   return (
-    <div>Settings</div>
+    <>
+      <h1>Settings</h1>
+    </>
   )
 }
 

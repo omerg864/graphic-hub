@@ -4,6 +4,7 @@ import sendEmail from '../middleWare/emailMiddleware.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
+const savedUsernames = ["login", "register", "verify", "chat", "chats", "settings", "search", "NewProject", "admin" ];
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -16,8 +17,13 @@ const registerUser = asyncHandler(async (req, res, next) => {
     const userExists = await User.findOne({ email });
     if (userExists) {
         res.status(400)
-        throw new Error('User already exists');
+        throw new Error('User with that email already exists');
     }
+    var username1 = username.toLowerCase().replace(' ', '');
+    if (savedUsernames.includes(username1) || await User.findOne({ username: username1 })) {
+        res.status(400);
+        throw new Error('Username is already taken');
+    } 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const user = await User.create({
@@ -49,12 +55,12 @@ const loginUser = asyncHandler(async (req, res, next) => {
     const user = await User.findOne({ email });
     if (!user) {
         res.status(400)
-        throw new Error('User does not exist');
+        throw new Error('Invalid email or password');
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
         res.status(400)
-        throw new Error('Invalid credentials');
+        throw new Error('Invalid email or password');
     }
     if (!user.verified) {
         res.status(400)

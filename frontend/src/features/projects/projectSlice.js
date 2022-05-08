@@ -27,7 +27,7 @@ export const getProjects = createAsyncThunk("projects/getAll", async (query, thu
         const response = await projectService.getProjects(query);
         return response.data;
     } catch (error) {
-        const message = (error.response && error.response.data.message) || error.message;
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         thunkAPI.rejectWithValue({ message });
     }
 });
@@ -38,7 +38,8 @@ export const createProject = createAsyncThunk("projects/create", async (data, th
         const response = await projectService.createProject(data, token);
         return response.data;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        thunkAPI.rejectWithValue({ message });
     }
 });
 
@@ -48,7 +49,8 @@ export const updateProject = createAsyncThunk("projects/update", async (data, th
         const response = await projectService.updateProject(data.id, data.content, data.type, token);
         return response.data;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        thunkAPI.rejectWithValue({ message });
     }
 });
 
@@ -58,7 +60,8 @@ export const deleteProject = createAsyncThunk("projects/delete", async (id, thun
         const response = await projectService.deleteProject(id, token);
         return response.data;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        thunkAPI.rejectWithValue({ message });
     }
 });
 
@@ -66,13 +69,10 @@ export const getProject = createAsyncThunk("projects/get", async (params, thunkA
     try {
         const token = thunkAPI.getState().auth.user.token;
         const response = await projectService.getProject(params.name, params.username, token);
-        if (response.status === 400 || response.status === 404 || response.status === 401) {
-            thunkAPI.rejectWithValue({message: response.data.message});
-        } else {
-            return response.data;
-        }
+        return response.data;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        thunkAPI.rejectWithValue({ message });
     }
 });
 
@@ -82,17 +82,15 @@ export const getPrivateProjects = createAsyncThunk("projects/privateGet", async 
         const response = await projectService.getPrivateProjects(token);
         return response.data;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        thunkAPI.rejectWithValue({ message });
     }
 });
 
 export const searchProjects = createAsyncThunk("projects/search", async (query, thunkAPI) => {
     try {
-        const payload = await projectService.searchProjects(query);
-        if (!payload.success){
-            return thunkAPI.rejectWithValue({message: payload.message});
-        }
-        return payload;
+        const response = await projectService.searchProjects(query);
+        return response.data;
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         return thunkAPI.rejectWithValue({message});
@@ -143,7 +141,7 @@ export const projectSlice = createSlice({
                 }).addCase(createProject.rejected, (state, action) => {
                     state.isLoading = false;
                     state.isError = true;
-                    state.message = action.payload;
+                    state.message = action.payload.message;
                     })
                     .addCase(deleteProject.pending, (state) => {
                         state.isLoading = true;
@@ -154,7 +152,7 @@ export const projectSlice = createSlice({
                     }).addCase(deleteProject.rejected, (state, action) => {
                         state.isLoading = false;
                         state.isError = true;
-                        state.message = action.payload;
+                        state.message = action.payload.message;
                         })
                         .addCase(updateProject.pending, (state) => {
                             state.isLoading = true;
@@ -172,7 +170,7 @@ export const projectSlice = createSlice({
                         }).addCase(updateProject.rejected, (state, action) => {
                             state.isLoading = false;
                             state.isError = true;
-                            state.message = action.payload;
+                            state.message = action.payload.message;
                             })
                             .addCase(getProject.pending, (state) => {
                                 state.isLoading = true;
@@ -183,7 +181,7 @@ export const projectSlice = createSlice({
                             }).addCase(getProject.rejected, (state, action) => {
                                 state.isLoading = false;
                                 state.isError = true;
-                                state.message = action.payload;
+                                state.message = action.payload.message;
                                 })
                                     .addCase(getPrivateProjects.pending, (state) => {
                                         state.isLoading = true;
@@ -194,7 +192,7 @@ export const projectSlice = createSlice({
                                     }).addCase(getPrivateProjects.rejected, (state, action) => {
                                         state.isLoading = false;
                                         state.isError = true;
-                                        state.message = action.payload;
+                                        state.message = action.payload.message;
                                         })
                                         .addCase(searchProjects.pending, (state) => {
                                             state.isLoading = true;
@@ -204,7 +202,7 @@ export const projectSlice = createSlice({
                                         }).addCase(searchProjects.rejected, (state, action) => {
                                             state.isLoading = false;
                                             state.isError = true;
-                                            state.message = action.payload;
+                                            state.message = action.payload.message;
                                             })
     }
 });

@@ -21,7 +21,7 @@ function Login() {
 
     useEffect(() => {
         if(isError){
-            toast.error("Invalid email or password", {className: "toast"});
+            toast.error(message);
         }
         if((isSuccess && user) || user){
             navigate("/");

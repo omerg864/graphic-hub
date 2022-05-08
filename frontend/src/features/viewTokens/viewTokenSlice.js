@@ -13,14 +13,10 @@ export const getViewTokens = createAsyncThunk("viewTokens/getAll", async (thunkA
     try {
         const token = thunkAPI.getState().auth.user.token;
         const response = await viewTokenService.getViewTokens(token);
-        if (response.status === 200) {
-            return response.data;
-        } else {
-            response.status(400);
-            throw new Error(response.data.message);
-        }
+        return response.data;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
     }
 });
 
@@ -29,14 +25,10 @@ export const createViewToken = createAsyncThunk("viewTokens/create", async (data
     try {
         const token = thunkAPI.getState().auth.user.token;
         const response = await viewTokenService.createViewToken(data, token);
-        if (response.status === 200) {
-            return response.data;
-        } else {
-            response.status(400);
-            throw new Error(response.data.message);
-        }
+        return response.data;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
     }
 });
 
@@ -45,14 +37,10 @@ export const updateViewToken = createAsyncThunk("viewTokens/update", async (data
     try {
         const token = thunkAPI.getState().auth.user.token;
         const response = await viewTokenService.updateViewToken(data, token);
-        if (response.status === 200) {
-            return response.data;
-        } else {
-            response.status(400);
-            throw new Error(response.data.message);
-        }
+        return response.data;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
     }
 });
 
@@ -61,14 +49,10 @@ export const deleteViewToken = createAsyncThunk("viewTokens/delete", async (id, 
     try {
         const token = thunkAPI.getState().auth.user.token;
         const response = await viewTokenService.deleteViewToken(id, token);
-        if (response.status === 200) {
-            return response.data;
-        } else {
-            response.status(400);
-            throw new Error(response.data.message);
-        }
+        return response.data;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
     }
 });
 
@@ -79,7 +63,8 @@ export const VerifyViewToken = createAsyncThunk("viewTokens/verify", async (toke
         const response = await viewTokenService.VerifyViewToken(token_num, token);
         return response.data;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
     }
 });
 

@@ -32,11 +32,8 @@ const initialState = {
 // register user
 export const register = createAsyncThunk("auth/register", async (user, thunkAPI) => {
     try{
-        const payload =  await authService.register(user);
-        if (payload.success) {
-            return payload;
-        }
-        return thunkAPI.rejectWithValue(payload);
+        const response =  await authService.register(user);
+        return response.data;
     }catch(error){
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         return thunkAPI.rejectWithValue({message});
@@ -46,11 +43,8 @@ export const register = createAsyncThunk("auth/register", async (user, thunkAPI)
 export const login = createAsyncThunk("auth/login", async (user, thunkAPI) => {
     try{
 
-        const payload =  await authService.login(user);
-        if (!payload.success){
-            return thunkAPI.rejectWithValue({message: payload.message});
-        }
-        return payload;
+        const response =  await authService.login(user);
+        return response.data;
     }catch(error){
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         return thunkAPI.rejectWithValue({message});
@@ -63,11 +57,8 @@ export const logout = createAsyncThunk("auth/logout", async () => {
 
 export const verifyAccount = createAsyncThunk("auth/verify", async (token, thunkAPI) => {
     try{
-        const payload = await authService.verifyAccount(token)
-        if (payload.success){
-            return payload;
-        }
-        return thunkAPI.rejectWithValue({message: payload.message});
+        const response = await authService.verifyAccount(token)
+        return response.data;
     }catch(error){
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         return thunkAPI.rejectWithValue({message});
@@ -77,11 +68,8 @@ export const verifyAccount = createAsyncThunk("auth/verify", async (token, thunk
 export const getUser = createAsyncThunk("auth/getUser", async (username, thunkAPI) => {
     try{
         const token = thunkAPI.getState().auth.user.token;
-        const payload = await authService.getUser(username, token);
-        if (!payload.success){
-            return thunkAPI.rejectWithValue({message: payload.message});
-        }
-        return payload;
+        const response = await authService.getUser(username, token);
+        return response.data;
     }catch(error){
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         return thunkAPI.rejectWithValue({message});
@@ -91,11 +79,8 @@ export const getUser = createAsyncThunk("auth/getUser", async (username, thunkAP
 export const updateFollow = createAsyncThunk("auth/following", async (username, thunkAPI) => {
     try{
         const token = thunkAPI.getState().auth.user.token;
-        const payload =  await authService.updateFollow(username, token);
-        if (!payload.success){
-            return thunkAPI.rejectWithValue({message: payload.message});
-        }
-        return payload;
+        const response =  await authService.updateFollow(username, token);
+        return response.data;
     }catch(error){
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         return thunkAPI.rejectWithValue({message});
@@ -104,11 +89,8 @@ export const updateFollow = createAsyncThunk("auth/following", async (username, 
 
 export const searchUser = createAsyncThunk("auth/searchUser", async (username, thunkAPI) => {
     try{
-        const payload =  await authService.searchUser(username);
-        if (!payload.success){
-            return thunkAPI.rejectWithValue({message: payload.message});
-        }
-        return payload;
+        const response =  await authService.searchUser(username);
+        return response.data;
     }catch(error){
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         return thunkAPI.rejectWithValue({message});
@@ -118,11 +100,8 @@ export const searchUser = createAsyncThunk("auth/searchUser", async (username, t
 
 export const getUserByid = createAsyncThunk("auth/getUserByid", async (id, thunkAPI) => {
     try{
-        const payload =  await authService.getUserByid(id);
-        if (!payload.success){
-            return thunkAPI.rejectWithValue({message: payload.message});
-        }
-        return payload;
+        const response =  await authService.getUserByid(id);
+        return response.data;
     }
     catch(error){
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -151,7 +130,7 @@ export const authSlice = createSlice({
         }).addCase(register.rejected, (state, action) => {
             state.isLoading = false;
             state.isError = true;
-            state.message = action.payload;
+            state.message = action.payload.message;
             state.user = null;
             })
             .addCase(logout.fulfilled, (state) => {
@@ -165,7 +144,7 @@ export const authSlice = createSlice({
                 }).addCase(login.rejected, (state, action) => {
                     state.isLoading = false;
                     state.isError = true;
-                    state.message = action.payload;
+                    state.message = action.payload.message;
                     state.user = null;
                     })
                     .addCase(getUser.pending, (state) => {
@@ -187,7 +166,7 @@ export const authSlice = createSlice({
                     }).addCase(verifyAccount.rejected, (state, action) => {
                         state.isLoading = false;
                         state.isError = true;
-                        state.message = action.payload;
+                        state.message = action.payload.message;
                         })
                         .addCase(updateFollow.pending, (state) => {
                             state.isLoading = true;
@@ -200,7 +179,7 @@ export const authSlice = createSlice({
                         }).addCase(updateFollow.rejected, (state, action) => {
                             state.isLoading = false;
                             state.isError = true;
-                            state.message = action.payload;
+                            state.message = action.payload.message;
                             })
                             .addCase(searchUser.pending, (state) => {
                                 state.isLoading = true;
@@ -210,7 +189,7 @@ export const authSlice = createSlice({
                             }).addCase(searchUser.rejected, (state, action) => {
                                 state.isLoading = false;
                                 state.isError = true;
-                                state.message = action.payload;
+                                state.message = action.payload.message;
                                 })
                                 .addCase(getUserByid.pending, (state) => {
                                     state.isLoading = true;
@@ -220,7 +199,7 @@ export const authSlice = createSlice({
                                 }).addCase(getUserByid.rejected, (state, action) => {
                                     state.isLoading = false;
                                     state.isError = true;
-                                    state.message = action.payload;
+                                    state.message = action.payload.message;
                                     })
                         
     }

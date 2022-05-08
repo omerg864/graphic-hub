@@ -9,6 +9,7 @@ import ImageViewer from "react-simple-image-viewer";
 import ProfileData from '../components/ProfileData';
 import {AiFillLike, AiOutlineLike} from 'react-icons/ai';
 import { TiEdit } from 'react-icons/ti';
+import { MdPublic, MdLockOutline, MdLockOpen } from 'react-icons/md';
 import { useNavigate } from "react-router-dom";
 
 
@@ -118,16 +119,18 @@ const goToEdit = () => {
         <div style={{width: "100%"}}>
           {isUser ? <div className='space' style={{width: "100%"}}>
             <div></div>
-          <h1>Project</h1>
+            <div>
+            <h1>Project {project.visibility === 'public' ? <MdPublic /> : project.visibility === 'private' ? <MdLockOutline /> : <MdLockOpen /> }</h1>
+            </div>
           <button type='button' className='btn btn-primary' onClick={goToEdit}><TiEdit /> Edit</button>
-          </div> : <div className='center-div'><h1>Project</h1></div>}
+          </div> : <div className='center-div'><h1>Project {project.visibility === 'public' ? <MdPublic /> : project.visibility === 'private' ? <MdLockOutline /> : <MdLockOpen /> }</h1></div>}
           <div className='space' style={{width: "100%"}}>
             <div></div>
             <h2>{project.name}</h2>
             {isUser ? <div style={{width : "60px"}}></div> : <div></div>}
           </div>
           <div className='space' style={{width: "100%"}}>
-        <p style={{marginBottom: '20px'}}>{project.description}</p>
+        <pre style={{marginBottom: '20px'}}>{project.description}</pre>
         <div>
                 <small>{likes} Likes</small>
                 {!isUser ? isLiked ? <button onClick={unLikelikeProject} className="btn"><AiFillLike style={{color: '#0d6efd'}}/></button> :

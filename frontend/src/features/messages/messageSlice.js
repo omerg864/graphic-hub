@@ -14,14 +14,10 @@ export const getMessages = createAsyncThunk("messages/get", async (username, thu
     try {
         const token = thunkAPI.getState().auth.user.token;
         const response = await messageService.getMessages(username, token);
-        if (response.status === 200) {
-            return response.data;
-        } else {
-            response.status(400);
-            throw new Error(response.data.message);
-        }
+        return response.data;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
     }
 });
 
@@ -55,14 +51,10 @@ export const sendMessage = createAsyncThunk("messages/send", async (data, thunkA
     try {
         const token = thunkAPI.getState().auth.user.token;
         const response = await messageService.sendMessage(data.username, data.message, token);
-        if (response.status === 200) {
-            return response.data;
-        } else {
-            response.status(400);
-            throw new Error(response.data.message);
-        }
+        return response.data;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
     }
 });
 
@@ -70,14 +62,10 @@ export const deleteMessage = createAsyncThunk("messages/delete", async (username
     try {
         const token = thunkAPI.getState().auth.user.token;
         const response = await messageService.deleteMessage(username, token);
-        if (response.status === 200) {
-            return response.data;
-        } else {
-            response.status(400);
-            throw new Error(response.data.message);
-        }
+        return response.data;
     } catch (error) {
-        console.log(error);
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
     }
 });
 
@@ -105,7 +93,7 @@ export const messageSlice = createSlice({
         }).addCase(getMessages.rejected, (state, action) => {
             state.isLoading = false;
             state.isError = true;
-            state.message = action.payload;
+            state.message = action.payload.message;
             })
             .addCase(sendMessage.pending, (state) => {
                     state.isLoading = true;
@@ -116,7 +104,7 @@ export const messageSlice = createSlice({
                 }).addCase(sendMessage.rejected, (state, action) => {
                     state.isLoading = false;
                     state.isError = true;
-                    state.message = action.payload;
+                    state.message = action.payload.message;
                     })
                     .addCase(deleteMessage.pending, (state) => {
                         state.isLoading = true;
@@ -138,6 +126,7 @@ export const messageSlice = createSlice({
                         }).addCase(getChats.rejected, (state, action) => {
                             state.isLoading = false;
                             state.isError = true;
+                            state.message = action.payload.message;
                             })
                             .addCase(deleteChats.pending, (state) => {
                                 state.isLoading = true;
@@ -148,6 +137,7 @@ export const messageSlice = createSlice({
                             }).addCase(deleteChats.rejected, (state, action) => {
                                 state.isLoading = false;
                                 state.isError = true;
+                                state.message = action.payload.message;
                                 })
     }
 });
