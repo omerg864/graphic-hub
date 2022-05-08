@@ -116,7 +116,7 @@ const getPrivateProjects = async (token) => {
 
 const searchProjects = async (query) => {
     const response = await axios.get(API_URL + 'search/' + query)
-    return response.data;
+    return response;
 }
 
 

@@ -25,12 +25,12 @@ const logout = async () => {
 
 const verifyAccount = async (token) => {
     const response = await axios.get(API_URL + "verify/" + token);
-    return response.data;
+    return response;
 }
 
 const getUser = async (username, token) => {
     const response = await axios.get(API_URL + username);
-    return response.data;
+    return response;
 }
 
 const updateFollow = async (username, token) => {
@@ -40,17 +40,17 @@ const updateFollow = async (username, token) => {
             accepts: 'application/json'
         }
     });
-    return response.data;
+    return response;
 }
 
 const searchUser = async (username) => {
     const response = await axios.get(API_URL + "search/" + username);
-    return response.data;
+    return response;
 }
 
 const getUserByid = async (id, token) => {
     const response = await axios.get(API_URL + "/id/" + id);
-    return response.data;
+    return response;
 }
 
 

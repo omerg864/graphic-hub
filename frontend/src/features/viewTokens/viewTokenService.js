@@ -11,7 +11,7 @@ const getViewTokens = async (token) => {
             accepts:"application/json"
         }
     });
-    return response.data;
+    return response;
 }
 
 
@@ -22,7 +22,7 @@ const createViewToken = async (data, token) => {
             accepts:"application/json"
         }
     });
-    return response.data;
+    return response;
 }
 
 
@@ -33,7 +33,7 @@ const updateViewToken = async (data, token) => {
             accepts:"application/json"
         }
     });
-    return response.data;
+    return response;
 }
 
 

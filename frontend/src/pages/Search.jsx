@@ -2,8 +2,8 @@ import {useParams, useNavigate} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import Spinner from '../components/Spinner';
 import {useEffect, useState} from 'react';
-import {searchUser, getUserByid} from '../features/auth/authSlice';
-import { searchProjects } from '../features/projects/projectSlice';
+import {searchUser, getUserByid, reset as user_reset} from '../features/auth/authSlice';
+import { searchProjects, reset } from '../features/projects/projectSlice';
 import ProjectItem from '../components/ProjectItem';
 
 
@@ -25,9 +25,11 @@ function Search() {
 
   useEffect(() => {
     dispatch(searchUser(params.searchKey)).then(result => {
+      dispatch(user_reset());
       setUsersFound(result.payload.users)
     });
     dispatch(searchProjects(params.searchKey)).then(result => {
+      dispatch(reset());
       setProjectsFound(result.payload.projects)
     });
   }, [dispatch, params]);
@@ -52,10 +54,6 @@ function Search() {
 
   const goToProfile = (username) => {
     navigate(`/${username}`);
-  }
-
-  const goToProject = (name, user) => {
-    navigate(`/${user.username}/${name}`);
   }
 
   if (isLoading || isLoading2) {
