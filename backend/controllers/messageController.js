@@ -22,7 +22,6 @@ const getChats = asyncHandler(async (req, res, next) => {
     const chats_sorted = [];
     const ids = []
     chats.forEach(chat => {
-        console.log(chat);
         if (chat.sender._id.toString() != req.user._id.toString()) {
             if (!ids.includes(chat.sender._id.toString())) {
                 ids.push(chat.sender._id.toString());

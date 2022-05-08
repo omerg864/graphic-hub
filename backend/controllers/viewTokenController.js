@@ -4,7 +4,7 @@ import crypto from 'crypto';
 
 
 const getTokens = asyncHandler(async (req, res, next) => {
-    const tokens = await ViewToken.find({user: req.user});
+    const tokens = await ViewToken.find({user: req.user._id});
     res.status(200).json({
         success: true,
         tokens: tokens

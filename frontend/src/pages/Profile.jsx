@@ -122,14 +122,14 @@ function Profile() {
         <button className='btn btn-success' style={{height: '40px'}} onClick={goToNewProject}><a><MdOutlineLibraryAdd  style={{color: 'white'}} /> New</a></button>
         </div>
       <nav>
-  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <button class="nav-link active" id="nav-public-tab" onClick={switchToPublic} data-bs-toggle="tab" data-bs-target="#nav-public" type="button" role="tab" aria-controls="nav-public" aria-selected="true">Public</button>
-    <button class="nav-link" onClick={switchToPrivateView} id="nav-private-view-tab" data-bs-toggle="tab" data-bs-target="#nav-private-view" type="button" role="tab" aria-controls="nav-private-view" aria-selected="false">Private View</button>
-    {isUser && <button class="nav-link" id="nav-private-tab" onClick={switchToPrivate} data-bs-toggle="tab" data-bs-target="#nav-private" type="button" role="tab" aria-controls="nav-private" aria-selected="false">Private</button>}
+  <div className="nav nav-tabs" id="nav-tab" role="tablist">
+    <button className="nav-link active" id="nav-public-tab" onClick={switchToPublic} data-bs-toggle="tab" data-bs-target="#nav-public" type="button" role="tab" aria-controls="nav-public" aria-selected="true">Public</button>
+    <button className="nav-link" onClick={switchToPrivateView} id="nav-private-view-tab" data-bs-toggle="tab" data-bs-target="#nav-private-view" type="button" role="tab" aria-controls="nav-private-view" aria-selected="false">Private View</button>
+    {isUser && <button className="nav-link" id="nav-private-tab" onClick={switchToPrivate} data-bs-toggle="tab" data-bs-target="#nav-private" type="button" role="tab" aria-controls="nav-private" aria-selected="false">Private</button>}
   </div>
 </nav>
-<div class="tab-content" id="nav-tabContent">
-  <div class="tab-pane fade show active" id="nav-public" role="tabpanel" aria-labelledby="nav-public-tab">
+<div className="tab-content" id="nav-tabContent">
+  <div className="tab-pane fade show active" id="nav-public" role="tabpanel" aria-labelledby="nav-public-tab">
   {projects.length > 0 ? projects.map(project => (
         <div key={project.id}>
           <ProjectItem key={project.id} project={project} isUser={isUser} top={false}/>
@@ -138,16 +138,16 @@ function Profile() {
       <h3>No Public Projects</h3> 
       </div>}
   </div>
-  <div class="tab-pane fade" id="nav-private-view" role="tabpanel" aria-labelledby="nav-private-view-tab">
+  <div className="tab-pane fade" id="nav-private-view" role="tabpanel" aria-labelledby="nav-private-view-tab">
     <form>
       <div className="form-group">
-        <label htmlFor="view_token">View Token</label>
+        <label htmlhtmlFor="view_token">View Token</label>
         <input type="text" className="form-control" id="view_token"/>
       </div>
       <button type="submit" className="btn btn-primary">Submit</button>
     </form>
   </div>
-  {isUser && <div class="tab-pane fade" id="nav-private" role="tabpanel" aria-labelledby="nav-private-tab">
+  {isUser && <div className="tab-pane fade" id="nav-private" role="tabpanel" aria-labelledby="nav-private-tab">
     {private_projects.length > 0 ? private_projects.map(project => (
         <div key={project.id}>
           <ProjectItem key={project.id} project={project} isUser={isUser} top={false}/>

@@ -1,7 +1,7 @@
 import Spinner from '../components/Spinner';
 import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {getUser, getUserByid, reset as user_reset} from '../features/auth/authSlice';
+import {getUser, reset as user_reset} from '../features/auth/authSlice';
 import {getProjects, reset} from '../features/projects/projectSlice';
 import {useParams, useNavigate, Link} from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -89,15 +89,15 @@ function Home() {
 
   return (
     <>
-      <div class="d-flex align-items-start">
+      <div className="d-flex align-items-start">
         <div>
-  <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-    <button class="nav-link active" id="v-pills-top-tab" data-bs-toggle="pill" data-bs-target="#v-pills-top" type="button" onClick={switchToTop} role="tab" aria-controls="v-pills-top" aria-selected="true">Top Projects</button>
-    <button class="nav-link" id="v-pills-follow-tab" data-bs-toggle="pill" data-bs-target="#v-pills-follow" type="button" onClick={switchToFollowing} role="tab" aria-controls="v-pills-follow" aria-selected="false">Following</button>
+  <div className="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+    <button className="nav-link active" id="v-pills-top-tab" data-bs-toggle="pill" data-bs-target="#v-pills-top" type="button" onClick={switchToTop} role="tab" aria-controls="v-pills-top" aria-selected="true">Top Projects</button>
+    <button className="nav-link" id="v-pills-follow-tab" data-bs-toggle="pill" data-bs-target="#v-pills-follow" type="button" onClick={switchToFollowing} role="tab" aria-controls="v-pills-follow" aria-selected="false">Following</button>
   </div>
   </div>
-  <div class="tab-content" id="v-pills-tabContent" style={{width: '100%'}}>
-    <div class="tab-pane fade show active" id="v-pills-top" role="tabpanel" aria-labelledby="v-pills-top-tab" style={{width: '100%'}}>
+  <div className="tab-content" id="v-pills-tabContent" style={{width: '100%'}}>
+    <div className="tab-pane fade show active" id="v-pills-top" role="tabpanel" aria-labelledby="v-pills-top-tab" style={{width: '100%'}}>
       <div >
       <h2>Top Projects</h2>
       <p>Most Liked Projects</p>
@@ -112,7 +112,7 @@ function Home() {
       ))}
       </div>
     </div>
-    <div class="tab-pane fade" id="v-pills-follow" role="tabpanel" aria-labelledby="v-pills-follow-tab">
+    <div className="tab-pane fade" id="v-pills-follow" role="tabpanel" aria-labelledby="v-pills-follow-tab">
       {user ? (
         <div>
         <h2>Following </h2>

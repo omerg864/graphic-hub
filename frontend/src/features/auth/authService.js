@@ -53,6 +53,41 @@ const getUserByid = async (id, token) => {
     return response;
 }
 
+const updateUser = async (data, token) => {
+    if (data.image) {
+        // Initial FormData
+        const formData = new FormData();
+        formData.append("file", data.img_url);
+        formData.append("upload_preset", process.env.REACT_APP_PRESENT_NAME); // Replace the preset name with your own
+        formData.append("api_key", process.env.REACT_APP_CLOUDINARY_API_KEY); // Replace API key with your own Cloudinary key
+        formData.append("timestamp", (Date.now() / 1000) | 0);
+        
+        // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
+        await axios.post(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/image/upload`, formData, {
+            headers: { "X-Requested-With": "XMLHttpRequest" },
+        }).then(response => {
+            const data2 = response.data;
+            const fileURL = data2.secure_url // You should store this URL for future references in your app
+            data.img_url = fileURL;
+        })
+    const response = await axios.put(API_URL, data, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            accepts: 'application/json'
+        }
+    });
+    return response;
+} else {
+    const response = await axios.put(API_URL, data, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            accepts: 'application/json'
+        }
+    });
+    return response;
+    }
+}
+
 
 const authService = {
     register,
@@ -62,7 +97,8 @@ const authService = {
     getUser,
     updateFollow,
     searchUser,
-    getUserByid
+    getUserByid,
+    updateUser
 };
 
 export default authService;

@@ -2,7 +2,7 @@ import {useParams, useNavigate} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import Spinner from '../components/Spinner';
 import {useEffect, useState} from 'react';
-import {searchUser, getUserByid, reset as user_reset} from '../features/auth/authSlice';
+import {searchUser, reset as user_reset} from '../features/auth/authSlice';
 import { searchProjects, reset } from '../features/projects/projectSlice';
 import ProjectItem from '../components/ProjectItem';
 
@@ -65,13 +65,13 @@ function Search() {
     <div className="container">
       <h2>Search resaults For: {params.searchKey}</h2>
     <nav>
-  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <button class="nav-link active" id="nav-users-tab" onClick={switchToUsers} data-bs-toggle="tab" data-bs-target="#nav-users" type="button" role="tab" aria-controls="nav-users" aria-selected="true">Users</button>
-    <button class="nav-link" onClick={switchToProjects} id="nav-projects-tab" data-bs-toggle="tab" data-bs-target="#nav-projects" type="button" role="tab" aria-controls="nav-projects" aria-selected="false">Projects</button>
+  <div className="nav nav-tabs" id="nav-tab" role="tablist">
+    <button className="nav-link active" id="nav-users-tab" onClick={switchToUsers} data-bs-toggle="tab" data-bs-target="#nav-users" type="button" role="tab" aria-controls="nav-users" aria-selected="true">Users</button>
+    <button className="nav-link" onClick={switchToProjects} id="nav-projects-tab" data-bs-toggle="tab" data-bs-target="#nav-projects" type="button" role="tab" aria-controls="nav-projects" aria-selected="false">Projects</button>
   </div>
 </nav>
-<div class="tab-content" id="nav-tabContent">
-  <div class="tab-pane fade show active" id="nav-users" role="tabpanel" aria-labelledby="nav-users-tab">
+<div className="tab-content" id="nav-tabContent">
+  <div className="tab-pane fade show active" id="nav-users" role="tabpanel" aria-labelledby="nav-users-tab">
     {usersFound.length > 0 ? usersFound.map(user => (
               <div className="card">
               <div className="card-body">
@@ -90,7 +90,7 @@ function Search() {
               </div>
           </div>)) : <div className="center-div"><h4>No users found</h4></div>}
   </div>
-  <div class="tab-pane fade" id="nav-projects" role="tabpanel" aria-labelledby="nav-projects-tab">
+  <div className="tab-pane fade" id="nav-projects" role="tabpanel" aria-labelledby="nav-projects-tab">
     {projectsFound.length > 0 ? projectsFound.map(project => (
       user && project.user._id === user._id ? (
         <ProjectItem key={project.id} project={project} isUser={true} top={false}/>

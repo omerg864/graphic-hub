@@ -46,19 +46,19 @@ function Header() {
   }
 
   return (
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">GraphicHub</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div className="container-fluid">
+    <a className="navbar-brand" href="/">GraphicHub</a>
+    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span className="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/">Home</a>
+    <div className="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+        <li className="nav-item">
+          <a className="nav-link active" aria-current="page" href="/">Home</a>
         </li>
-        <input class="form-control me-2" type="search" placeholder="Search" id="search_txt" aria-label="Search"/>
-        <button class="btn btn-outline-success" onClick={search}>Search</button>
+        <input className="form-control me-2" type="search" placeholder="Search" id="search_txt" aria-label="Search"/>
+        <button className="btn btn-outline-success" onClick={search}>Search</button>
       </ul>
           {user ? (
           <>
@@ -70,18 +70,18 @@ function Header() {
           <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><button className="dropdown-item" onClick={gotoProfile}><CgProfile /> Profile</button></li>
             <li><button className="dropdown-item" onClick={goToChats}><BsFillChatSquareTextFill /> Chats</button></li>
-            <li><hr class="dropdown-divider"/></li>
-            <li><button class="dropdown-item" onClick={onLogout}><FaSignOutAlt /> Logout</button></li>
+            <li><hr className="dropdown-divider"/></li>
+            <li><button className="dropdown-item" onClick={onLogout}><FaSignOutAlt /> Logout</button></li>
           </ul>
         </li>
           </ul>
           </>) : (<>
-            <ul class="navbar-nav nav-buttons">
-          <li class='nav-item'>
-            <button class="btn btn-secondary btn-left" onClick={gotoLogin}><FaSignInAlt/> Login</button>
+            <ul className="navbar-nav nav-buttons">
+          <li className='nav-item'>
+            <button className="btn btn-secondary btn-left" onClick={gotoLogin}><FaSignInAlt/> Login</button>
             </li>
-            <li class='nav-item'>
-            <button class="btn btn-secondary" onClick={gotoRegister}><FaUser/>Register</button>
+            <li className='nav-item'>
+            <button className="btn btn-secondary" onClick={gotoRegister}><FaUser/>Register</button>
             </li>
             </ul>
           </>)}

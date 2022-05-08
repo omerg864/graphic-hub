@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from 'react-redux';
-import {getUser, getUserByid, reset as user_reset} from '../features/auth/authSlice';
+import {getUser, reset as user_reset} from '../features/auth/authSlice';
 import {useState, useEffect} from 'react';
 import {useParams, useNavigate, Link} from 'react-router-dom';
 import {reset, getChats, deleteChats} from '../features/messages/messageSlice';

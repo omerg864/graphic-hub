@@ -9,7 +9,7 @@ const initialState = {
     message: ""
 }
 
-export const getViewTokens = createAsyncThunk("viewTokens/getAll", async (thunkAPI) => {
+export const getViewTokens = createAsyncThunk("viewTokens/getAll", async (_,thunkAPI) => {
     try {
         const token = thunkAPI.getState().auth.user.token;
         const response = await viewTokenService.getViewTokens(token);
@@ -93,7 +93,7 @@ export const viewTokenSlice = createSlice({
         }).addCase(getViewTokens.rejected, (state, action) => {
             state.isLoading = false;
             state.isError = true;
-            state.message = action.payload;
+            state.message = action.payload.message;
             })
             .addCase(createViewToken.pending, (state) => {
                     state.isLoading = true;
@@ -104,7 +104,7 @@ export const viewTokenSlice = createSlice({
                 }).addCase(createViewToken.rejected, (state, action) => {
                     state.isLoading = false;
                     state.isError = true;
-                    state.message = action.payload;
+                    state.message = action.payload.message;
                     })
                     .addCase(deleteViewToken.pending, (state) => {
                         state.isLoading = true;
@@ -115,7 +115,7 @@ export const viewTokenSlice = createSlice({
                     }).addCase(deleteViewToken.rejected, (state, action) => {
                         state.isLoading = false;
                         state.isError = true;
-                        state.message = action.payload;
+                        state.message = action.payload.message;
                         })
                         .addCase(updateViewToken.pending, (state) => {
                             state.isLoading = true;
@@ -126,7 +126,7 @@ export const viewTokenSlice = createSlice({
                         }).addCase(updateViewToken.rejected, (state, action) => {
                             state.isLoading = false;
                             state.isError = true;
-                            state.message = action.payload;
+                            state.message = action.payload.message;
                             })
                             .addCase(VerifyViewToken.pending, (state) => {
                                 state.isLoading = true;
@@ -137,7 +137,7 @@ export const viewTokenSlice = createSlice({
                             }).addCase(VerifyViewToken.rejected, (state, action) => {
                                 state.isLoading = false;
                                 state.isError = true;
-                                state.message = action.payload;
+                                state.message = action.payload.message;
                                 })
     }
 });

@@ -4,7 +4,8 @@ import { getProject, updateProject, reset, deleteProject } from "../features/pro
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { BsTrash } from "react-icons/bs";
+import { BsTrash, BsExclamationLg } from "react-icons/bs";
+
 
 
 function EditProject() {
@@ -25,7 +26,6 @@ function EditProject() {
 
 
     const changeProject = async () => {
-        console.log("asfasfasf")
         const name = document.getElementById("project-name").value;
         const description = document.getElementById("project-description").value;
         var images = [];
@@ -97,17 +97,18 @@ function EditProject() {
     <>
     {isUser ? (
         <>
+        <div className="center-div">
         <div className="content-section">
             <div className="center-div">
             <h1>Edit Section</h1>
             </div>
             <div>
         <p style={{fontWeight: '600'}}>Project Name</p>
-        <input type="text" placeholder="Project Name" id="project-name" name="project-name" onChange={changeName} value={projectName} />
+        <input type="text" className="form-control" placeholder="Project Name" id="project-name" name="project-name" onChange={changeName} value={projectName} />
         </div>
         <div style={{marginTop: '10px'}}>
         <p style={{fontWeight: '600'}}>Project Description</p>
-        <textarea name="project-description" id="project-description" placeholder="Description" value={projectDescription} onChange={changeDescription} style={{resize: 'both', width: '100%', height: '80px'}}></textarea>
+        <textarea name="project-description" className="form-control" id="project-description" placeholder="Description" value={projectDescription} onChange={changeDescription} style={{resize: 'both', width: '100%', height: '80px'}}></textarea>
         </div>
         <div>
             <p style={{fontWeight: '600'}}>Images</p>
@@ -117,39 +118,39 @@ function EditProject() {
                         <div className="image-container">
                         <img src={image} alt="project" style={{width: '100px', height: '100px'}} />
                         <div className="switch-image">
-                        <label class="switch">
-                        <input type="checkbox" class="switch-input" id={`deleteimage${index}`} name={`deleteimage${index}`}/>
-                        <span class="switch-label" data-on="On" data-off="Off"><BsTrash className="trash-label"/></span>
-                        <span class="switch-handle"></span>
+                        <label className="switch">
+                        <input type="checkbox" className="switch-input" id={`deleteimage${index}`} name={`deleteimage${index}`}/>
+                        <span className="switch-label" data-on="On" data-off="Off"><BsTrash className="trash-label"/></span>
+                        <span className="switch-handle"></span>
                         </label>
                         </div>
                         </div>
                     )
                 })}
-                <input style={{marginTop: '40px'}} type="file" multiple id="project_images" name="project_images" />
+                <input style={{marginTop: '40px'}} className="form-control" type="file" multiple id="project_images" name="project_images" />
             </div>
         </div>
         <div>
         <p style={{fontWeight: '600'}}>Project Visibility</p>
         </div>
-        <div class="form-check">
-            {project.visibility == 'public' ? (<input class="form-check-input" type="radio" name="project_visibility" id="project_visibility1" checked />) :
-             (<input class="form-check-input" type="radio" name="project_visibility" id="project_visibility1" />)}
-        <label class="form-check-label" for="project_visibility1">
+        <div className="form-check">
+            {project.visibility == 'public' ? (<input className="form-check-input" type="radio" name="project_visibility" id="project_visibility1" checked />) :
+             (<input className="form-check-input" type="radio" name="project_visibility" id="project_visibility1" />)}
+        <label className="form-check-label" htmlFor="project_visibility1">
             Public
         </label>
         </div>
-        <div class="form-check">
-            {project.visibility == 'private' ? (<input class="form-check-input" type="radio" name="project_visibility" id="project_visibility2" checked/>) : 
-            (<input class="form-check-input" type="radio" name="project_visibility" id="project_visibility2" />)}
-        <label class="form-check-label" for="project_visibility2">
+        <div className="form-check">
+            {project.visibility == 'private' ? (<input className="form-check-input" type="radio" name="project_visibility" id="project_visibility2" checked/>) : 
+            (<input className="form-check-input" type="radio" name="project_visibility" id="project_visibility2" />)}
+        <label className="form-check-label" htmlFor="project_visibility2">
             Private
         </label>
         </div>
-        <div class="form-check">
-            {project.visibility == 'private View' ? (<input class="form-check-input" type="radio" name="project_visibility" id="project_visibility3" checked />) : 
-            (<input class="form-check-input" type="radio" name="project_visibility" id="project_visibility3" />)}
-        <label class="form-check-label" for="project_visibility3">
+        <div className="form-check">
+            {project.visibility == 'private View' ? (<input className="form-check-input" type="radio" name="project_visibility" id="project_visibility3" checked />) : 
+            (<input className="form-check-input" type="radio" name="project_visibility" id="project_visibility3" />)}
+        <label className="form-check-label" htmlFor="project_visibility3">
             Private View
         </label>
         </div>
@@ -157,9 +158,11 @@ function EditProject() {
         <button className="btn btn-primary" type="button" onClick={changeProject}>Change</button>
         </div>
         </div>
-        <div className="center-div delete-zone" style={{marginTop: '20px'}}>
+        <div className="center-div delete-zone" style={{marginTop: '20px', width: 'fit-content'}}>
+            <h4><BsExclamationLg style={{color: 'red'}}/></h4>
             <h5>Delete this Project?</h5>
         <button className="btn btn-danger" type="button" onClick={deletethisProject}>Delete</button>
+        </div>
         </div>
         </>
     ): 

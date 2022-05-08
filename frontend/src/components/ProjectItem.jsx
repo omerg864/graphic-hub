@@ -5,7 +5,6 @@ import { updateProject, reset } from '../features/projects/projectSlice';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import Spinner from './Spinner';
-import { getUserByid } from '../features/auth/authSlice';
 
 function ProjectItem({ project, isUser, top }) {
     const navigate = useNavigate();

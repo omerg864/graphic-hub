@@ -53,34 +53,34 @@ function NewProject() {
     <div className="center-div">
         <h1>Create New Project</h1>
         <form>
-            <div class="mb-3">
+            <div className="mb-3">
                 <p style={{fontWeight: '600'}}>Project Name</p>
-        <input type="text" placeholder="Project Name" id="project-name" name="project-name" onChange={checkProjectName}/>
+        <input type="text" className='form-control' placeholder="Project Name" id="project-name" name="project-name" onChange={checkProjectName}/>
         </div>
-        <div class="mb-3">
+        <div className="mb-3">
             <p style={{fontWeight: '600'}}>Project Description</p>
-        <textarea placeholder="Project Description" style={{resize: 'both'}} id="project-description" name="project-description"/>
+        <textarea placeholder="Project Description" className='form-control' style={{resize: 'both'}} id="project-description" name="project-description"/>
         </div>
-        <div class="mb-3">
+        <div className="mb-3">
         <p style={{fontWeight: '600'}}>Images</p>
-        <input type="file" id="project_images" multiple name="project_images" />
+        <input type="file" id="project_images" className='form-control' multiple name="project_images" />
         </div>
         <p style={{fontWeight: '600'}}>Project Visibility</p>
-        <div class="form-check">
-        <input class="form-check-input" type="radio" name="project_visibility" id="project_visibility1" checked/>
-        <label class="form-check-label" for="project_visibility1">
+        <div className="form-check">
+        <input className="form-check-input" type="radio" name="project_visibility" id="project_visibility1" checked/>
+        <label className="form-check-label" htmlFor="project_visibility1">
             Public
         </label>
         </div>
-        <div class="form-check">
-        <input class="form-check-input" type="radio" name="project_visibility" id="project_visibility2"/>
-        <label class="form-check-label" for="project_visibility2">
+        <div className="form-check">
+        <input className="form-check-input" type="radio" name="project_visibility" id="project_visibility2"/>
+        <label className="form-check-label" htmlFor="project_visibility2">
             Private
         </label>
         </div>
-        <div class="form-check">
-        <input class="form-check-input" type="radio" name="project_visibility" id="project_visibility3"/>
-        <label class="form-check-label" for="project_visibility3">
+        <div className="form-check">
+        <input className="form-check-input" type="radio" name="project_visibility" id="project_visibility3"/>
+        <label className="form-check-label" htmlFor="project_visibility3">
             Private View
         </label>
         </div>

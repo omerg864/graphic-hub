@@ -109,6 +109,17 @@ export const getUserByid = createAsyncThunk("auth/getUserByid", async (id, thunk
     }
 });
 
+export const updateUser = createAsyncThunk("auth/updateUser", async (data, thunkAPI) => {
+    try{
+        const token = thunkAPI.getState().auth.user.token;
+        const response =  await authService.updateUser(data, token);
+        return response.data;
+    }catch(error){
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
+    }
+});
+
 
 export const authSlice = createSlice({
     name: "auth",
@@ -201,6 +212,18 @@ export const authSlice = createSlice({
                                     state.isError = true;
                                     state.message = action.payload.message;
                                     })
+                                    .addCase(updateUser.pending, (state) => {
+                                        state.isLoading = true;
+                                    }).addCase(updateUser.fulfilled, (state, action) => {
+                                        state.isLoading = false;
+                                        state.isSuccess = true;
+                                        state.user = {...action.payload.user, token: state.user.token};
+                                        localStorage.setItem("user", JSON.stringify(state.user));
+                                    }).addCase(updateUser.rejected, (state, action) => {
+                                        state.isLoading = false;
+                                        state.isError = true;
+                                        state.message = action.payload.message;
+                                        })
                         
     }
 });

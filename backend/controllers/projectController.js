@@ -97,7 +97,6 @@ const updateProject = asyncHandler(async (req, res, next) => {
     if (count > 0) {
         req.body.deleteimages.forEach(image => {
             var public_id = "graphic hub/" + image.split('/').pop().split('.')[0];
-            console.log(public_id);
             try {
                 cloudinary.uploader.destroy(public_id, {
                     cloud_name: process.env.CLOUD_NAME, 

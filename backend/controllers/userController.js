@@ -4,7 +4,7 @@ import sendEmail from '../middleWare/emailMiddleware.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const savedUsernames = ["login", "register", "verify", "chat", "chats", "settings", "search", "NewProject", "admin" ];
+const savedUsernames = ["login", "register", "verify", "chat", "chats", "settings", "search", "NewProject", "admin", "api" ];
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -106,6 +106,42 @@ const verifyUser = asyncHandler(async (req, res, next) => {
     });
 });
 
+const updateUser = asyncHandler(async (req, res, next) => {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+        res.status(400)
+        throw new Error('User does not exist');
+    }
+    const {f_name, l_name, username, email, company, img_url, intro} = req.body;
+    const username1 = username.toLowerCase().replace(' ', '');
+    if (username1 !== user.username.toLowerCase().replace(' ', '')) {
+    if (savedUsernames.includes(username1) || await User.findOne({ username: username1 })) {
+        res.status(400);
+        throw new Error('Username is already taken');
+    }
+    }
+    if (email !== user.email) {
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            res.status(400)
+            throw new Error('User with that email already exists');
+        }
+    }
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, {
+        f_name: f_name,
+        l_name: l_name,
+        username: username,
+        email: email,
+        company: company,
+        img_url: img_url,
+        intro: intro
+    }, { new: true });
+    res.status(200).json({
+        success: true,
+        user: updatedUser
+    });
+});
+
 const updateFollow = asyncHandler(async (req, res, next) => {
     const {username} = req.params;
     const user = await User.findOne({username: username});
@@ -180,4 +216,4 @@ const getUserByid = asyncHandler(async (req, res, next) => {
 });
 
 
-export {registerUser, loginUser, getUser, verifyUser, updateFollow, searchUser, getUserByid};
+export {registerUser, loginUser, getUser, verifyUser, updateFollow, searchUser, getUserByid, updateUser};
