@@ -18,7 +18,9 @@ function Chats() {
     const {messages, chats, isLoading, isSuccess, isError, message} = useSelector((state) => state.messages);
 
     useEffect(() => {
-        dispatch(getChats());
+        if (user) {
+            dispatch(getChats());
+        }
     }, []);
 
     const formatDate = (date) => {
@@ -27,7 +29,9 @@ function Chats() {
       }
     
       useEffect(() => {
+          if (user) {
           dispatch(getChats());
+      }
         }, [dispatch, isSuccess]);
     
     const deleteChat = (username) => {
@@ -52,6 +56,7 @@ function Chats() {
 
   return (
     <>
+    {user ? (<>
     <div className='center-div'>
     <h1>My Chats</h1>
     </div>
@@ -77,6 +82,7 @@ function Chats() {
             </div>
         </div>
     ))}
+    </>): (<h2><Link to="/login">Login</Link> or <Link to="/register">Register</Link> to view chats</h2>)}
     </>
   )
 }

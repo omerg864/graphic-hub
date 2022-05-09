@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { createViewToken, reset as token_reset } from '../features/viewTokens/viewTokenSlice';
 import Spinner from '../components/Spinner';
@@ -48,6 +48,7 @@ function NewToken() {
 
   return (
     <>
+    {user ? (
     <div className='center-div'>
     <div className="content-section" style={{width: 'fit-content'}}>
     <div className="center-div">
@@ -71,6 +72,7 @@ function NewToken() {
         </div>
     </div>
     </div>
+    ) : (<h2><Link to="/login">Login</Link> or <Link to="/register">Register</Link> to create a new token</h2>)}
     </>
   )
 }

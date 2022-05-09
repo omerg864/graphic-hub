@@ -28,7 +28,7 @@ const verifyAccount = async (token) => {
     return response;
 }
 
-const getUser = async (username, token) => {
+const getUser = async (username) => {
     const response = await axios.get(API_URL + username);
     return response;
 }

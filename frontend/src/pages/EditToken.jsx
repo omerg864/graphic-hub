@@ -13,6 +13,11 @@ function EditToken() {
 
     const {token, isLoading, isSuccess, isError, message} = useSelector((state) => state.viewToken);
 
+    const { user } = useSelector((state) => state.auth);
+
+    const [isUser, setIsUser] = useState(false);
+    
+
     const [tokenData, setTokenData] = useState({name: '', expires: 0});
 
     const getYear = (date) => {
@@ -41,6 +46,9 @@ function EditToken() {
     useEffect(() => {
         dispatch(getViewToken(params.id)).then((result) => {
             setTokenData({name: result.payload.token.name, expires: 0});
+            if (result.payload.token.user === user._id){
+                setIsUser(true);
+            }
         });
     }, []);
 
@@ -63,6 +71,7 @@ function EditToken() {
 
   return (
     <>
+    {isUser ? (
     <div className="center-div">
         <div className="content-section">
             <div className="center-div">
@@ -83,7 +92,7 @@ function EditToken() {
             <button className="btn btn-primary" onClick={updateToken}>Update Token</button>
             </form>
     </div>
-    </div>
+    </div>): (<h1>You are NOT Authorized to edit this Token!</h1>)}
     </>
   )
 }

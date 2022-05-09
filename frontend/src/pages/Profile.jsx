@@ -78,6 +78,7 @@ function Profile() {
   useEffect(() => {
     dispatch(getUser(params.username));
     dispatch(getProjects({username: params.username, orderBy: 'updatedAt'}));
+    if (user) {
     if (user.username === params.username){
       setIsUser(true);
       dispatch(getPrivateProjects());
@@ -85,6 +86,7 @@ function Profile() {
     if (user.following.includes(params.username)){
       setIsFollowed(true);
     }
+  }
   }, [dispatch, params, user, setIsFollowed]);
 
   useEffect(() => {
@@ -119,7 +121,7 @@ function Profile() {
       <div className="container">
         <div className='space'>
         <h2>Projects</h2>
-        <button className='btn btn-success' style={{height: '40px'}} onClick={goToNewProject}><a><MdOutlineLibraryAdd  style={{color: 'white'}} /> New</a></button>
+        {isUser && <button className='btn btn-success' style={{height: '40px'}} onClick={goToNewProject}><a><MdOutlineLibraryAdd  style={{color: 'white'}} /> New</a></button>}
         </div>
       <nav>
   <div className="nav nav-tabs" id="nav-tab" role="tablist">

@@ -163,9 +163,16 @@ const getProject = asyncHandler(async (req, res, next) => {
         res.status(404)
         throw new Error('Project not found');
     }
+    if (req.user) {
     if (project.user._id.toString() !== req.user._id.toString() && project.visibility !== 'public') {
         res.status(401)
         throw new Error('You are not authorized to view this project');
+    }
+    } else {
+        if (project.visibility !== 'public') {
+            res.status(401)
+            throw new Error('You are not authorized to view this project');
+        }
     }
     res.status(200).json({
         success: true,

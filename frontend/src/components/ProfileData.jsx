@@ -31,21 +31,25 @@ function ProfileData({ friend, user, isChat }) {
     }
 
     useEffect(() => {
+      if (user) {
         if (user.username === params.username){
           setIsUser(true);
         }
         if (user.following.includes(params.username)){
           setIsFollowed(true);
         }
+      }
       }, []);
 
     useEffect(() => {
+      if (user) {
         if (user.username === params.username){
           setIsUser(true);
         }
         if (user.following.includes(params.username)){
           setIsFollowed(true);
         }
+      }
       }, [setIsFollowed, setIsUser]);
 
   return (
@@ -61,8 +65,8 @@ function ProfileData({ friend, user, isChat }) {
       {friend.company && <div><small><HiOutlineOfficeBuilding /> Company: {friend.company}</small></div>}
       </div>
       <div>
-        {isUser && <button className="btn btn-primary btn-block" onClick={goToSettings}>Edit Profile</button>}
-        {!isUser && <div>
+        {user && isUser && <button className="btn btn-primary btn-block" onClick={goToSettings}>Edit Profile</button>}
+        {user && !isUser && <div>
          {!isChat && (isFollowed ? <button className="btn btn-primary btn-block" onClick={follow}>Unfollow</button> : <button className="btn btn-primary btn-block" onClick={follow}>Follow</button>)} 
         {!isChat && <button className="btn btn-success btn-block" onClick={goTOChat}>Chat</button>}
          </div>}

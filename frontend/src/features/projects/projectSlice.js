@@ -67,7 +67,11 @@ export const deleteProject = createAsyncThunk("projects/delete", async (id, thun
 
 export const getProject = createAsyncThunk("projects/get", async (params, thunkAPI) => {
     try {
-        const token = thunkAPI.getState().auth.user.token;
+        if (thunkAPI.getState().auth.user) {
+        var token = thunkAPI.getState().auth.user.token;
+        } else {
+            var token = "NoToken";
+        }
         const response = await projectService.getProject(params.name, params.username, token);
         return response.data;
     } catch (error) {

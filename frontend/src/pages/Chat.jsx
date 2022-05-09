@@ -3,7 +3,7 @@ import Spinner from '../components/Spinner';
 import {useEffect, useState} from 'react';
 import { getUser, reset as user_reset } from '../features/auth/authSlice';
 import { getMessages, sendMessage, deleteMessage, reset } from '../features/messages/messageSlice';
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { toast } from 'react-toastify';
 import {AiOutlineSend} from 'react-icons/ai';
 import ProfileData from '../components/ProfileData';
@@ -28,16 +28,19 @@ function Profile() {
     const isError2 = user_state.isError;
 
     useEffect(() => {
+      if ( user) {
       var messages_div = document.getElementById("messages");
       if (messages_div) {
         window.scrollTo(0,messages_div.scrollHeight);
       }
+    }
     }, [isSuccess]);
   
     useEffect(() => {
+      if (user) {
       dispatch(getUser(params.reciever));
       dispatch(getMessages(params.reciever));
-
+      }
     }, [dispatch, params]);
 
     useEffect(() => {
@@ -70,6 +73,7 @@ function Profile() {
   
     return (
       <>
+      {user ? (
       <div className='row-div'>
         <div style={{position: 'fixed'}}>
           <ProfileData user={user} friend={friend} isChat={true}/>
@@ -102,6 +106,7 @@ function Profile() {
         </div>
         </div>
         </div>
+      ) : (<h2><Link to="/login">Login</Link> or <Link to="/register">Register</Link> to chat</h2>)}
       </>
     )
   }

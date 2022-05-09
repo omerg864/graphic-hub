@@ -1,6 +1,6 @@
 import { createProject, reset } from '../features/projects/projectSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import Spinner from '../components/Spinner';
 import { toast } from 'react-toastify';
@@ -48,6 +48,7 @@ function NewProject() {
     }
   return (
     <>
+    {user ? (
     <div className='center-div'>
     <div className="content-section" style={{width: 'fit-content'}}>
     <div className="center-div">
@@ -91,6 +92,7 @@ function NewProject() {
         </div>
         </div>
         </div>
+    ) : (<h2><Link to="/login">Login</Link> or <Link to="/register">Register</Link> to create your own project</h2>)}
     </>
   )
 }

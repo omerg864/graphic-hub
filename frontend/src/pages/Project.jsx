@@ -73,9 +73,11 @@ const goToEdit = () => {
       username: params.username}))
     dispatch(getUser(params.username));
     dispatch(getProjects({username: params.username}));
+    if (user) {
         if (user.username === params.username){
           setIsUser(true);
         }
+      }
   }, [dispatch, params, setIsLiked, setLikes, user]);
 
   useEffect(() => {
@@ -99,9 +101,11 @@ const goToEdit = () => {
   }, [isError, isError2, message, message2]);
 
   useEffect(() => {
+    if (user) {
     if (project.likes.includes(user.username)) {
       setIsLiked(true);
     }
+  }
     setLikes(project.likes.length);
   }, [project]);
 
@@ -133,7 +137,7 @@ const goToEdit = () => {
         <pre style={{marginBottom: '20px'}}>{project.description}</pre>
         <div>
                 <small>{likes} Likes</small>
-                {!isUser ? isLiked ? <button onClick={unLikelikeProject} className="btn"><AiFillLike style={{color: '#0d6efd'}}/></button> :
+                {user && !isUser ? isLiked ? <button onClick={unLikelikeProject} className="btn"><AiFillLike style={{color: '#0d6efd'}}/></button> :
                  <button onClick={unLikelikeProject} className="btn"><AiOutlineLike style={{color: '#0d6efd'}}/></button> : null}
                 </div>
           </div>

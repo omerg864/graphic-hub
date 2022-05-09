@@ -76,7 +76,7 @@ function ProjectItem({ project, isUser, top }) {
                 </div>
                 <div>
                 <small>{likes} Likes</small>
-                {!isUser ? isLiked ? <button onClick={unLikelikeProject} style={{marginBottom: '5px'}} className="btn"><AiFillLike style={{color: '#0d6efd'}}/></button> :
+                {user && !isUser ? isLiked ? <button onClick={unLikelikeProject} style={{marginBottom: '5px'}} className="btn"><AiFillLike style={{color: '#0d6efd'}}/></button> :
                  <button onClick={unLikelikeProject} style={{marginBottom: '5px'}} className="btn"><AiOutlineLike style={{color: '#0d6efd'}}/></button> : null}
                 </div>
                 </div>

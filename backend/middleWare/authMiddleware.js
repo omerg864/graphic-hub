@@ -52,6 +52,32 @@ const protectUser = asyncHandler(async (req, res, next) => {
     }
 })
 
+const getUserSign = asyncHandler(async (req, res, next) => {
+    let token;
+
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+        try{
+            token = req.headers.authorization.split(' ')[1];
+            if (token === 'NoToken') {
+                req.user = null;
+                next();
+            } else {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            req.user = await User.findById(decoded.id).select('-password');
+            next();
+            }
+        } catch(error){
+            console.log(error);
+            req.user = null;
+            next();
+        }
+    }
+    if (!token) {
+        req.user = null;
+        next();
+    }
+})
+
 
 const admin_protected = asyncHandler(async (req, res, next) => {
     let token;
@@ -76,4 +102,4 @@ const admin_protected = asyncHandler(async (req, res, next) => {
     }
 })
 
-export {protect, protectUser, admin_protected};
+export {protect, protectUser, admin_protected, getUserSign};

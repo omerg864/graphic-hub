@@ -33,6 +33,7 @@ function Settings() {
   const message2 = view_tokens_state.message;
 
   useEffect(() => {
+    if (user) {
     dispatch(getViewTokens());
     setUserData({
       f_name: user.f_name,
@@ -41,6 +42,7 @@ function Settings() {
       info: user.info,
       company: user.company,
     });
+  }
   }, []);
 
   const dataChange = (e) => {
