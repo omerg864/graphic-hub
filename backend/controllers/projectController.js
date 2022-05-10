@@ -24,13 +24,16 @@ const getProjects = asyncHandler(async (req, res, next) => {
             projects: projects
         });
     } else {
+        const page = query.page ? parseInt(query.page) : 0;
         if (Object.keys(query).includes('username') && Object.keys(query).includes('orderBy')) {
             const user = await User.findOne({username: query.username});
             if (!user) {
                 res.status(404);
                 throw new Error('User not found');
             }
-            var projects = await Project.find({user: user, visibility: "public"}).populate(populate_user).sort({[query.orderBy]: -1});
+            var projects = await Project.find({user: user, visibility: "public"}).populate(populate_user).sort({[query.orderBy]: -1}).limit(8).skip(page * 8);
+            var pages = Math.ceil(projects.length / 8);
+            projects = projects.slice(page * 8, page * 8 + 8);
         } else if (Object.keys(query).includes('username')) {
             const user = await User.findOne({username: query.username});
             if (!user) {
@@ -38,6 +41,8 @@ const getProjects = asyncHandler(async (req, res, next) => {
                 throw new Error('User not found');
             }
             var projects = await Project.find({user: user, visibility: "public"}).populate(populate_user);
+            var pages = Math.ceil(projects.length / 8);
+            projects = projects.slice(page * 8, page * 8 + 8);
         } else if (Object.keys(query).includes('orderBy') && Object.keys(query).includes('following')) {
             const users = await User.find({username: {$in: query.following.split(',')}});
             var ids = [];
@@ -45,11 +50,17 @@ const getProjects = asyncHandler(async (req, res, next) => {
                 ids.push(user._id);
             });
             var projects = await Project.find({user: {$in: ids}, visibility: "public"}).populate(populate_user).sort({[query.orderBy]: -1});
+            var pages = Math.ceil(projects.length / 8);
+            projects = projects.slice(page * 8, page * 8 + 8);
         } else if (Object.keys(query).includes('following')) {
             const users = await User.find({username: {$in: query.following.split(',')}});
             var projects = await Project.find({user: {$in: users._id}, visibility: "public"}).populate(populate_user);
+            var pages = Math.ceil(projects.length / 8);
+            projects = projects.slice(page * 8, page * 8 + 8);
         } else if (Object.keys(query).includes('orderBy')) {
             var projects = await Project.find({visibility: "public"}).populate(populate_user).sort({[query.orderBy]: -1});
+            var pages = Math.ceil(projects.length / 8);
+            projects = projects.slice(page * 8, page * 8 + 8);
         }
         else {
             res.status(400);
@@ -57,7 +68,8 @@ const getProjects = asyncHandler(async (req, res, next) => {
         }
         res.status(200).json({
             success: true,
-            projects: projects
+            projects: projects,
+            pages: pages
         });
     }
 });

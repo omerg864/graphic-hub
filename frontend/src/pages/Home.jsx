@@ -23,12 +23,43 @@ function Home() {
   const isError2 = user_state.isError;
   const isSuccess2 = user_state.isSuccess;
 
+  const [toppages, setTopPages] = useState(1);
+
+  const [followpages, setFollowPages] = useState(1);
+
   useEffect(() => {
-    dispatch(getProjects({orderBy: 'likes', type: 'top'}));
+    let query_obj = getQuery();
+    dispatch(getProjects({...query_obj ,orderBy: 'likes', type: 'top'})).then((result) => {
+      if (result.payload.success) {
+        setTopPages(result.payload.pages);
+      }
+    });
     if (user) {
-    dispatch(getProjects({orderBy: 'UpdatedAt', type: 'follow', following: user.following}));
+    dispatch(getProjects({...query_obj, orderBy: 'UpdatedAt', type: 'follow', following: user.following})).then((result) => {
+      if (result.payload.success) {
+        setFollowPages(result.payload.pages);
+      }
+    });
     }
   }, [dispatch, project]);
+
+  const getQuery = () => {
+    let search = window.location.search;
+    let query = search.replace('?', '').split('&');
+    let query_obj = {};
+    query.forEach((item) => {
+      let key = item.split('=')[0];
+      let value = item.split('=')[1];
+      if (key === 'page') {
+        query_obj[key] = parseInt(value) - 1;
+      }
+    });
+    console.log(query_obj);
+    if (!query_obj.page) {
+      query_obj.page = 0;
+    }
+    return query_obj;
+  }
 
   useEffect(() => {
     if (isSuccess){
@@ -51,34 +82,12 @@ function Home() {
 
   }, [isError, isError2, message, message2, dispatch]);
 
-  const switchToFollowing = () => {
-    var top_tab = document.getElementById('v-pills-top-tab');
-    top_tab.classList.remove('active');
-    top_tab.ariaSelected = false;
-    var following_tab = document.getElementById('v-pills-follow-tab');
-    following_tab.classList.add('active');
-    following_tab.ariaSelected = true;
-    var following_content = document.getElementById('v-pills-follow');
-    following_content.classList.add('show');
-    following_content.classList.add('active');
-    var top_content = document.getElementById('v-pills-top');
-    top_content.classList.remove('show');
-    top_content.classList.remove('active');
-  }
-
-  const switchToTop = () => {
-    var top_tab = document.getElementById('v-pills-top-tab');
-    top_tab.classList.add('active');
-    top_tab.ariaSelected = true;
-    var following_tab = document.getElementById('v-pills-follow-tab');
-    following_tab.classList.remove('active');
-    following_tab.ariaSelected = false;
-    var following_content = document.getElementById('v-pills-follow');
-    following_content.classList.remove('show');
-    following_content.classList.remove('active');
-    var top_content = document.getElementById('v-pills-top');
-    top_content.classList.add('show');
-    top_content.classList.add('active');
+  const getArray = (pages) => {
+    let array = [];
+    for (let i = 1; i <= pages; i++) {
+      array.push(i);
+    }
+    return array;
   }
 
 
@@ -92,8 +101,8 @@ function Home() {
       <div className="d-flex align-items-start">
         <div>
   <div className="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-    <button className="nav-link active" id="v-pills-top-tab" data-bs-toggle="pill" data-bs-target="#v-pills-top" type="button" onClick={switchToTop} role="tab" aria-controls="v-pills-top" aria-selected="true">Top Projects</button>
-    <button className="nav-link" id="v-pills-follow-tab" data-bs-toggle="pill" data-bs-target="#v-pills-follow" type="button" onClick={switchToFollowing} role="tab" aria-controls="v-pills-follow" aria-selected="false">Following</button>
+    <button className="nav-link active" id="v-pills-top-tab" data-bs-toggle="pill" data-bs-target="#v-pills-top" type="button" role="tab" aria-controls="v-pills-top" aria-selected="true">Top Projects</button>
+    <button className="nav-link" id="v-pills-follow-tab" data-bs-toggle="pill" data-bs-target="#v-pills-follow" type="button" role="tab" aria-controls="v-pills-follow" aria-selected="false">Following</button>
   </div>
   </div>
   <div className="tab-content" id="v-pills-tabContent" style={{width: '100%'}}>
@@ -111,6 +120,17 @@ function Home() {
           )
       ))}
       </div>
+      <div className="center-div" style={{marginTop: '20px', marginBottom: '10px'}}>
+      <nav aria-label="Page navigation example">
+  <ul class="pagination">
+  {getQuery().page != 0 && <li class="page-item"><a class="page-link" href={`?page=${getQuery().page}`}>Previous</a></li>}
+    {getArray(toppages).map(page => (
+      <li class={"page-item" + (page - 1 == getQuery().page ? ' active' : '')}><a class="page-link" href={`?page=${page}`}>{page}</a></li>
+    ))}
+    {getQuery().page + 1 != toppages && <li class="page-item"><a class="page-link" href={`?page=${getQuery().page + 2}`}>Next</a></li>}
+  </ul>
+</nav>
+</div>
     </div>
     <div className="tab-pane fade" id="v-pills-follow" role="tabpanel" aria-labelledby="v-pills-follow-tab">
       {user ? (
@@ -120,6 +140,17 @@ function Home() {
         {projects.map((project) => (
           <ProjectItem key={project.id} project={project} isUser={false} top={false}/>
         ))}
+              <div className="center-div" style={{marginTop: '20px', marginBottom: '10px'}}>
+      <nav aria-label="Page navigation example">
+  <ul class="pagination">
+    {getQuery().page != 0 && <li class="page-item"><a class="page-link" href={`?page=${getQuery().page}`}>Previous</a></li>}
+    {getArray(followpages).map(page => (
+      <li class={"page-item" + (page - 1 == getQuery().page ? ' active' : '')}><a class="page-link" href={`?page=${page}`}>{page}</a></li>
+    ))}
+    {getQuery().page + 1 != followpages && <li class="page-item"><a class="page-link" href={`?page=${getQuery().page + 2}`}>Next</a></li>}
+  </ul>
+</nav>
+</div>
         </div>
       ): (<h2><Link to="/login">Login</Link> or <Link to="/register">Register</Link> to view followings projects</h2>)}
     </div>

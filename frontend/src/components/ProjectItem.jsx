@@ -69,8 +69,11 @@ function ProjectItem({ project, isUser, top }) {
                  <button onClick={unLikelikeProject} style={{marginBottom: '5px'}} className="btn"><AiOutlineLike style={{color: '#0d6efd'}}/></button> : null}
                 </div>
                 </div>
-                <p className="card-text">Description: {project.description}</p>
-                <p>Owner: {project.user.username}</p>
+                <pre className="card-text">Description: {project.description}</pre>
+                <small>Owner: {project.user.username}</small>
+                <div>
+                <small>{project.images.length} Files</small>
+                </div>
                 <div className="space">
                 <small className="card-text">Last Updated: {formatDate(project.updatedAt)}</small>
                 <button className="btn btn-primary" onClick={gotoProject}>Open Project</button>

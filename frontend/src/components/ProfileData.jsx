@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, updateFollow } from '../features/auth/authSlice';
 import { FaUserFriends } from 'react-icons/fa';
@@ -57,7 +57,7 @@ function ProfileData({ friend, user, isChat }) {
         <div style={{marginRight: '10px'}}>
       <img src={friend.img_url ? friend.img_url : "https://res.cloudinary.com/omerg/image/upload/v1650568412/149071_gb8qdr.png"} alt="profile" className="rounded-circle account-img"/>
       <h2>{friend.f_name} {friend.l_name}</h2>
-      <h5>{friend.username}</h5>
+      <h5><Link to={`/${friend.username}`}>{friend.username}</Link></h5>
       <p>{friend.intro}</p>
       <small><FaUserFriends/> {friend.followers.length} followers • {friend.following.length} following</small>
       <div>
