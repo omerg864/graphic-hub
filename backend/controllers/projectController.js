@@ -180,11 +180,34 @@ const getProject = asyncHandler(async (req, res, next) => {
     });
 });
 
-const getPrivateProjects = asyncHandler(async (req, res, next) => {
-    const projects = await Project.find({user: req.user, visibility: 'private'}).populate(populate_user);
+const getMyProjects = asyncHandler(async (req, res, next) => {
+    const visibility = req.query.visibility;
+    const projects = await Project.find({user: req.user, visibility: visibility}).populate(populate_user);
     res.status(200).json({
         success: true,
         projects: projects
+    });
+});
+
+const getViewProjects = asyncHandler(async (req, res, next) => {
+    const user = await User.findOne({username: req.body.username});
+    const projects = await Project.find({user: user.id, visibility: 'private view'}).populate(populate_user);
+    res.status(200).json({
+        success: true,
+        projects: projects
+    });
+});
+
+const getViewProject = asyncHandler(async (req, res, next) => {
+    const user = await User.findOne({username: req.body.username});
+    const project = await Project.findOne({user: user.id, visibility: 'private view', name: req.body.name}).populate(populate_user);
+    if (!project) {
+        res.status(404)
+        throw new Error('Project not found');
+    }
+    res.status(200).json({
+        success: true,
+        project: project
     });
 });
 
@@ -202,4 +225,4 @@ const searchProjects = asyncHandler(async (req, res, next) => {
 });
 
 
-export {getProjects, addProject, updateProject, deleteProject, getProject, getPrivateProjects, searchProjects};
+export {getProjects, addProject, updateProject, deleteProject, getProject, getMyProjects, searchProjects, getViewProjects, getViewProject};

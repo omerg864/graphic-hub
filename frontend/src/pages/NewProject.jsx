@@ -34,6 +34,12 @@ function NewProject() {
         }
         dispatch(createProject(data));
     }
+    
+    useEffect(() => {
+        if (isError) {
+            toast.error(message);
+        }
+    }, [isError, message]);
 
     useEffect(() => {
         if (isSuccess) {

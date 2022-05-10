@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../components/Spinner';
 import {useEffect, useState} from 'react';
 import { getUser, updateFollow, reset as user_reset } from '../features/auth/authSlice';
-import { getProjects, getPrivateProjects, reset } from '../features/projects/projectSlice';
+import { getProjects, getMyProjects, accessViewProjects, reset } from '../features/projects/projectSlice';
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import ProjectItem from '../components/ProjectItem';
@@ -33,11 +33,42 @@ function Profile() {
 
   const [isUser, setIsUser] = useState(false);
 
-  const [isFollowed, setIsFollowed] = useState(false);
+  const [validToken, setValidToken] = useState(false);
 
   const goToNewProject = () => {
     navigate('/NewProject');
   }
+
+  const validateToken = () => {
+    const token = document.getElementById('view_token').value;
+    const username = params.username;
+    dispatch(accessViewProjects({token, username})).then((result) => {
+      if (result.payload.success) {
+        localStorage.setItem(`${username}_token`, token);
+        setValidToken(true);
+      }
+    });
+  }
+
+  const validateStorageToken = () => {
+    const token = localStorage.getItem(`${params.username}_token`);
+    const username = params.username;
+    dispatch(accessViewProjects({token, username})).then((result) => {
+      if (result.payload.success) {
+        localStorage.setItem(`${username}_token`, token);
+        setValidToken(true);
+      } else {
+        localStorage.removeItem(`${username}_token`);
+        setValidToken(false);
+      }
+    });
+  }
+
+  useEffect(() => {
+    if (localStorage.getItem(`${params.username}_token`)) {
+      validateStorageToken();
+    }
+  }, []);
 
   const switchToPrivateView = () => {
     document.getElementById('nav-private-view-tab').classList.add('active');
@@ -81,13 +112,15 @@ function Profile() {
     if (user) {
     if (user.username === params.username){
       setIsUser(true);
-      dispatch(getPrivateProjects());
-    }
-    if (user.following.includes(params.username)){
-      setIsFollowed(true);
+      dispatch(getMyProjects({
+        visibility: 'private'
+      }));
+      dispatch(getMyProjects({
+        visibility: 'private view'
+      }));
     }
   }
-  }, [dispatch, params, user, setIsFollowed]);
+  }, [dispatch, params, user]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -141,13 +174,32 @@ function Profile() {
       </div>}
   </div>
   <div className="tab-pane fade" id="nav-private-view" role="tabpanel" aria-labelledby="nav-private-view-tab">
+    {!isUser ? ( !validToken ? 
     <form>
       <div className="form-group">
         <label htmlhtmlFor="view_token">View Token</label>
         <input type="text" className="form-control" id="view_token"/>
       </div>
-      <button type="submit" className="btn btn-primary">Submit</button>
-    </form>
+      <button type="button" className="btn btn-primary" onClick={validateToken}>View Projects</button>
+    </form> : (
+            <div>
+            {private_view_projects.length > 0 ? private_view_projects.map(project => (
+              <div key={project.id}>
+              <ProjectItem key={project.id} project={project} isUser={isUser} top={false}/>
+              </div> )) : <div className='center-div'>
+                <h3>No Priavte view Projects</h3> 
+                </div>}
+            </div>
+    )) : (
+      <div>
+        {private_view_projects.length > 0 ? private_view_projects.map(project => (
+          <div key={project.id}>
+          <ProjectItem key={project.id} project={project} isUser={isUser} top={false}/>
+          </div> )) : <div className='center-div'>
+            <h3>No Priavte view Projects</h3> 
+            </div>}
+        </div>
+    )}
   </div>
   {isUser && <div className="tab-pane fade" id="nav-private" role="tabpanel" aria-labelledby="nav-private-tab">
     {private_projects.length > 0 ? private_projects.map(project => (

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../components/Spinner';
 import {useEffect, useState, useCallback} from 'react';
 import { getUser, reset as user_reset } from '../features/auth/authSlice';
-import { getProjects, getProject, updateProject, reset } from '../features/projects/projectSlice';
+import { getProjects, getProject, updateProject, accessViewProject, reset } from '../features/projects/projectSlice';
 import { useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
 import ImageViewer from "react-simple-image-viewer";
@@ -70,7 +70,24 @@ const goToEdit = () => {
   useEffect(() => {
     dispatch(getProject({
       name: params.project,
-      username: params.username}))
+      username: params.username})).then((result) => {
+        console.log(result);
+          if (result.meta.requestStatus === 'rejected') {
+            if (localStorage.getItem(`${params.username}_token`)) {
+              dispatch(accessViewProject({
+                name: params.project,
+                username: params.username,
+                token: localStorage.getItem(`${params.username}_token`)
+              })).then((result) => {
+                  if (result.payload.success) {
+                    toast.success("But Now i see the Token so welcome");
+                  }
+                }
+              );
+            }
+        }
+      }
+      );
     dispatch(getUser(params.username));
     dispatch(getProjects({username: params.username}));
     if (user) {

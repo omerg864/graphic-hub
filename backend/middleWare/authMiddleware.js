@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
+import ViewToken from '../models/viewTokenModel.js';
 
 const protect = asyncHandler(async (req, res, next) => {
     let token;
@@ -52,6 +53,33 @@ const protectUser = asyncHandler(async (req, res, next) => {
     }
 })
 
+const verifyViewToken = asyncHandler(async (req, res, next) => {
+    let token;
+    if (req.body.token && req.body.username) {
+        token = req.body.token;
+        const user = await User.findOne({username: req.body.username});
+        if (!user) {
+            res.status(401)
+            throw new Error('User not found');
+        }
+        const found_token = await ViewToken.findOne({token: token, user: user._id});
+        if (!found_token) {
+            res.status(401)
+            throw new Error('Invalid token');
+        }
+        const today = new Date();
+        const tokenDate = new Date(found_token.expires);
+        if (today > tokenDate) {
+            res.status(401)
+            throw new Error('Token expired please eneter a new token');
+        }
+        next();
+    } else {
+        res.status(401)
+        throw new Error('Not authorized, no token or username provided');
+    }
+});
+
 const getUserSign = asyncHandler(async (req, res, next) => {
     let token;
 
@@ -102,4 +130,4 @@ const admin_protected = asyncHandler(async (req, res, next) => {
     }
 })
 
-export {protect, protectUser, admin_protected, getUserSign};
+export {protect, protectUser, admin_protected, getUserSign, verifyViewToken};

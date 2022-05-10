@@ -39,7 +39,7 @@ export const createProject = createAsyncThunk("projects/create", async (data, th
         return response.data;
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        thunkAPI.rejectWithValue({ message });
+        throw new Error(message);
     }
 });
 
@@ -76,14 +76,14 @@ export const getProject = createAsyncThunk("projects/get", async (params, thunkA
         return response.data;
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        thunkAPI.rejectWithValue({ message });
+        throw new Error(message);
     }
 });
 
-export const getPrivateProjects = createAsyncThunk("projects/privateGet", async (_,thunkAPI) => {
+export const getMyProjects = createAsyncThunk("projects/getMy", async (query,thunkAPI) => {
     try {
         const token = thunkAPI.getState().auth.user.token;
-        const response = await projectService.getPrivateProjects(token);
+        const response = await projectService.getMyProjects(query, token);
         return response.data;
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -94,6 +94,26 @@ export const getPrivateProjects = createAsyncThunk("projects/privateGet", async 
 export const searchProjects = createAsyncThunk("projects/search", async (query, thunkAPI) => {
     try {
         const response = await projectService.searchProjects(query);
+        return response.data;
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
+    }
+});
+
+export const accessViewProjects = createAsyncThunk("projects/accessViewProjects", async (body, thunkAPI) => {
+    try {
+        const response = await projectService.accessViewProjects(body);
+        return response.data;
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue({message});
+    }
+});
+
+export const accessViewProject = createAsyncThunk("projects/accessViewProject", async (body, thunkAPI) => {
+    try {
+        const response = await projectService.accessViewProject(body);
         return response.data;
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -145,7 +165,7 @@ export const projectSlice = createSlice({
                 }).addCase(createProject.rejected, (state, action) => {
                     state.isLoading = false;
                     state.isError = true;
-                    state.message = action.payload.message;
+                    state.message = action.error.message;
                     })
                     .addCase(deleteProject.pending, (state) => {
                         state.isLoading = true;
@@ -185,15 +205,21 @@ export const projectSlice = createSlice({
                             }).addCase(getProject.rejected, (state, action) => {
                                 state.isLoading = false;
                                 state.isError = true;
-                                state.message = action.payload.message;
+                                state.message = action.error.message;
                                 })
-                                    .addCase(getPrivateProjects.pending, (state) => {
+                                    .addCase(getMyProjects.pending, (state) => {
                                         state.isLoading = true;
-                                    }).addCase(getPrivateProjects.fulfilled, (state, action) => {
+                                    }).addCase(getMyProjects.fulfilled, (state, action) => {
                                         state.isLoading = false;
                                         state.isSuccess = true;
-                                        state.private_projects = action.payload.projects;
-                                    }).addCase(getPrivateProjects.rejected, (state, action) => {
+                                        if (action.meta.arg.visibility) {
+                                            if (action.meta.arg.visibility === "private") {
+                                                state.private_projects = action.payload.projects;
+                                            } else {
+                                                state.private_view_projects = action.payload.projects;
+                                            }
+                                        }
+                                    }).addCase(getMyProjects.rejected, (state, action) => {
                                         state.isLoading = false;
                                         state.isError = true;
                                         state.message = action.payload.message;
@@ -208,6 +234,28 @@ export const projectSlice = createSlice({
                                             state.isError = true;
                                             state.message = action.payload.message;
                                             })
+                                            .addCase(accessViewProjects.pending, (state) => {
+                                                state.isLoading = true;
+                                            }).addCase(accessViewProjects.fulfilled, (state, action) => {
+                                                state.isLoading = false;
+                                                state.isSuccess = true;
+                                                state.private_view_projects = action.payload.projects;
+                                            }).addCase(accessViewProjects.rejected, (state, action) => {
+                                                state.isLoading = false;
+                                                state.isError = true;
+                                                state.message = action.payload.message;
+                                                })
+                                                .addCase(accessViewProject.pending, (state) => {
+                                                    state.isLoading = true;
+                                                }).addCase(accessViewProject.fulfilled, (state, action) => {
+                                                    state.isLoading = false;
+                                                    state.isSuccess = true;
+                                                    state.project = action.payload.project;
+                                                }).addCase(accessViewProject.rejected, (state, action) => {
+                                                    state.isLoading = false;
+                                                    state.isError = true;
+                                                    state.message = action.payload.message;
+                                                    })
     }
 });
 

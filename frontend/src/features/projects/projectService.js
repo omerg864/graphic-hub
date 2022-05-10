@@ -104,13 +104,24 @@ const getProject = async (name, username, token) => {
     return response;
 }
 
-const getPrivateProjects = async (token) => {
-    const response = await axios.get(API_URL + 'private', {
+const getMyProjects = async (query, token) => {
+    var query_string = new URLSearchParams(query).toString();
+    const response = await axios.get(API_URL + `my/?${query_string}`, {
         headers: {
             Authorization: `Bearer ${token}`,
             accepts:"application/json"
         }
     });
+    return response;
+}
+
+const accessViewProjects = async (body) => {
+    const response = await axios.post(API_URL + "accessViewProjects", body);
+    return response;
+}
+
+const accessViewProject = async (body) => {
+    const response = await axios.post(API_URL + "accessViewProject", body);
     return response;
 }
 
@@ -130,8 +141,10 @@ const projectService = {
     updateProject,
     deleteProject,
     getProject,
-    getPrivateProjects,
-    searchProjects
+    getMyProjects,
+    searchProjects,
+    accessViewProjects,
+    accessViewProject
 };
 
 export default projectService;
