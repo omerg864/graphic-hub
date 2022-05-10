@@ -3,6 +3,7 @@ import User from '../models/userModel.js';
 import sendEmail from '../middleWare/emailMiddleware.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { v2 as cloudinary } from 'cloudinary';
 
 const savedUsernames = ["login", "register", "verify", "chat", "chats", "settings", "search", "NewProject", "admin", "api" ];
 
@@ -112,7 +113,7 @@ const updateUser = asyncHandler(async (req, res, next) => {
         res.status(400)
         throw new Error('User does not exist');
     }
-    const {f_name, l_name, username, email, company, img_url, intro} = req.body;
+    const {f_name, l_name, username, email, company, img_url, intro, deleteImage} = req.body;
     const username1 = username.toLowerCase().replace(' ', '');
     if (username1 !== user.username.toLowerCase().replace(' ', '')) {
     if (savedUsernames.includes(username1) || await User.findOne({ username: username1 })) {
@@ -125,6 +126,24 @@ const updateUser = asyncHandler(async (req, res, next) => {
         if (userExists) {
             res.status(400)
             throw new Error('User with that email already exists');
+        }
+    }
+    if (deleteImage) {
+        var public_id = "graphic hub/" + deleteImage.split('/').pop().split('.')[0];
+        try {
+            cloudinary.uploader.destroy(public_id, {
+                cloud_name: process.env.CLOUD_NAME, 
+                api_key: process.env.CLOUDINARY_API_KEY, 
+                api_secret: process.env.CLOUDINARY_API_SECRET,
+                secure: true,
+                invalidate: true,
+                resource_type: 'image'
+            }, function(error,result) {
+                console.log(result, error) }
+            );
+        }
+        catch (err) {
+            console.log(err);
         }
     }
     const updatedUser = await User.findByIdAndUpdate(req.user.id, {

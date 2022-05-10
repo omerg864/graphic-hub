@@ -167,8 +167,8 @@ const goToEdit = () => {
         <img
           src={src}
           onClick={() => openImageViewer(index)}
-          width="300"
           key={index}
+          width="300"
           style={{ margin: "2px" }}
           alt=""
         />

@@ -1,11 +1,11 @@
 import Spinner from "../components/Spinner";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getProject, updateProject, reset, deleteProject } from "../features/projects/projectSlice";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { BsTrash, BsExclamationLg } from "react-icons/bs";
-
+import ImageViewer from "react-simple-image-viewer";
 
 
 function EditProject() {
@@ -23,6 +23,19 @@ function EditProject() {
     const [projectName, setProjectName] = useState("");
 
     const [projectDescription, setProjectDescription] = useState("")
+
+    const [currentImage, setCurrentImage] = useState(0);
+    const [isViewerOpen, setIsViewerOpen] = useState(false);
+
+  const openImageViewer = useCallback((index) => {
+    setCurrentImage(index);
+    setIsViewerOpen(true);
+  }, []);
+
+  const closeImageViewer = () => {
+    setCurrentImage(0);
+    setIsViewerOpen(false);
+  };
 
 
     const changeProject = async () => {
@@ -116,7 +129,7 @@ function EditProject() {
                 {project.images.map((image, index) => {
                     return (
                         <div className="image-container">
-                        <img src={image} alt="project" style={{width: '100px', height: '100px'}} />
+                        <img src={image} onClick={() => openImageViewer(index)} key={index} alt="project" style={{width: '100px', height: '100px'}} />
                         <div className="switch-image">
                         <label className="switch">
                         <input type="checkbox" className="switch-input" id={`deleteimage${index}`} name={`deleteimage${index}`}/>
@@ -129,6 +142,18 @@ function EditProject() {
                 })}
                 <input style={{marginTop: '40px'}} className="form-control" type="file" multiple id="project_images" name="project_images" />
             </div>
+            {isViewerOpen && (
+        <ImageViewer
+          src={project.images}
+          currentIndex={currentImage}
+          onClose={closeImageViewer}
+          disableScroll={false}
+          backgroundStyle={{
+            backgroundColor: "rgba(0,0,0,0.9)"
+          }}
+          closeOnClickOutside={true}
+        />
+      )}
         </div>
         <div>
         <p style={{fontWeight: '600'}}>Project Visibility</p>

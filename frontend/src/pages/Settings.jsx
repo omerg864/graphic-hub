@@ -75,9 +75,18 @@ function Settings() {
   const saveUser = () => {
     var image = document.getElementById('image').files[0];
     if (image) {
-    dispatch(updateUser({...userData, img_url: image, image: true}));
+    dispatch(updateUser({...userData, img_url: image, image: true, deleteImage: user.img_url ? user.img_url : ""}));
     } else {
-      dispatch(updateUser({...userData, image: false}));
+      var deleteImage = document.getElementById('deleteimage')
+      if (!deleteImage) {
+        dispatch(updateUser({...userData ,image: false, img_url: user.img_url}));
+      } else {
+        if (deleteImage.checked) {
+          dispatch(updateUser({...userData, deleteImage: user.img_url, img_url: ""}));
+        } else {
+          dispatch(updateUser({...userData ,image: false}));
+        }
+      }
     }
     toast.success('User data updated');
   }
@@ -149,7 +158,17 @@ function Settings() {
                   </div>
                   <div className="form-group">
                   <label htmlFor="exampleInputPicture">Profile Picture</label>
-                  {user.img_url ? (<div> <a>Current Picture: </a><img src={user.img_url} alt="profile" className="img-thumbnail" style={{width: '100px', height: '100px'}} /></div>) : <a>: No Profile picture uploaded</a>}
+                  {user.img_url ? (<div className="image-container">
+                     <a>Current Picture: </a>
+                     <img src={user.img_url} alt="profile" className="img-thumbnail" style={{width: '100px', height: '100px'}} />
+                     <div className="switch-image">
+                        <label className="switch">
+                        <input type="checkbox" className="switch-input" id={`deleteimage`} name={`deleteimage`}/>
+                        <span className="switch-label" data-on="On" data-off="Off"><BsTrash className="trash-label"/></span>
+                        <span className="switch-handle"></span>
+                        </label>
+                        </div>
+                     </div>) : <a>: No Profile picture uploaded</a>}
                   <input type="file" className="form-control" id="image" name="image" />
                   </div>
                 <div style={{marginTop: '20px'}}>
