@@ -28,7 +28,7 @@ export const getProjects = createAsyncThunk("projects/getAll", async (query, thu
         return response.data;
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        thunkAPI.rejectWithValue({ message });
+        return thunkAPI.rejectWithValue({ message });
     }
 });
 
@@ -39,7 +39,7 @@ export const createProject = createAsyncThunk("projects/create", async (data, th
         return response.data;
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        throw new Error(message);
+        return thunkAPI.rejectWithValue({ message });
     }
 });
 
@@ -50,7 +50,7 @@ export const updateProject = createAsyncThunk("projects/update", async (data, th
         return response.data;
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        thunkAPI.rejectWithValue({ message });
+        return thunkAPI.rejectWithValue({ message });
     }
 });
 
@@ -61,7 +61,7 @@ export const deleteProject = createAsyncThunk("projects/delete", async (id, thun
         return response.data;
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        thunkAPI.rejectWithValue({ message });
+        return thunkAPI.rejectWithValue({ message });
     }
 });
 
@@ -76,7 +76,7 @@ export const getProject = createAsyncThunk("projects/get", async (params, thunkA
         return response.data;
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        throw new Error(message);
+        return thunkAPI.rejectWithValue({ message });
     }
 });
 
@@ -87,7 +87,7 @@ export const getMyProjects = createAsyncThunk("projects/getMy", async (query,thu
         return response.data;
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-        thunkAPI.rejectWithValue({ message });
+        return thunkAPI.rejectWithValue({ message });
     }
 });
 
@@ -165,7 +165,7 @@ export const projectSlice = createSlice({
                 }).addCase(createProject.rejected, (state, action) => {
                     state.isLoading = false;
                     state.isError = true;
-                    state.message = action.error.message;
+                    state.message = action.payload.message;
                     })
                     .addCase(deleteProject.pending, (state) => {
                         state.isLoading = true;
@@ -187,6 +187,8 @@ export const projectSlice = createSlice({
                             if (action.meta.arg.type) {
                                 if (action.meta.arg.type === "top") {
                                     state.top_projects = [...state.top_projects.filter(project => project._id !== action.payload.project._id), action.payload.project];
+                                } else {
+                                    state.projects = [...state.projects.filter(project => project._id !== action.payload.project._id), action.payload.project];
                                 }
                             } else {
                                 state.projects = [...state.projects.filter(project => project._id !== action.payload.project._id), action.payload.project];
@@ -205,7 +207,7 @@ export const projectSlice = createSlice({
                             }).addCase(getProject.rejected, (state, action) => {
                                 state.isLoading = false;
                                 state.isError = true;
-                                state.message = action.error.message;
+                                state.message = action.payload.message;
                                 })
                                     .addCase(getMyProjects.pending, (state) => {
                                         state.isLoading = true;

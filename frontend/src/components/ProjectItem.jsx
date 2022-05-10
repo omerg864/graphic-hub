@@ -39,13 +39,6 @@ function ProjectItem({ project, isUser, top }) {
         setLikes(project.likes.length);
     }, [project, user, setIsLiked, setLikes]);
 
-    useEffect(() => {
-        if (isError){
-            toast.error(message);
-            dispatch(reset());
-        }
-    }, [isError, message]);
-
     const unLikelikeProject = () => {
         dispatch(updateProject({
                 id: project._id,
@@ -61,10 +54,6 @@ function ProjectItem({ project, isUser, top }) {
         const d = new Date(date);
         return d.toLocaleDateString();
       }
-
-    if (isLoading) {
-        return <Spinner />;
-    }
 
   return (
     <>

@@ -75,8 +75,13 @@ const verifyViewToken = asyncHandler(async (req, res, next) => {
         }
         next();
     } else {
-        res.status(401)
-        throw new Error('Not authorized, no token or username provided');
+        if (!req.body.token){
+            res.status(401)
+            throw new Error('Not authorized, no token provided');
+        } else {
+            res.status(401)
+            throw new Error('Not authorized, no username provided');
+        }
     }
 });
 

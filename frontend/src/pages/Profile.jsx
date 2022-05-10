@@ -44,8 +44,10 @@ function Profile() {
     const username = params.username;
     dispatch(accessViewProjects({token, username})).then((result) => {
       if (result.payload.success) {
+        console.log("asdasfas")
         localStorage.setItem(`${username}_token`, token);
         setValidToken(true);
+        dispatch(reset());
       }
     });
   }
