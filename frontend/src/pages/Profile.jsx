@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import ProjectItem from '../components/ProjectItem';
 import ProfileData from '../components/ProfileData';
 import { MdOutlineLibraryAdd } from 'react-icons/md';
+import Pagination from '../components/Pagination';
 
 
 function Profile() {
@@ -35,6 +36,10 @@ function Profile() {
 
   const [validToken, setValidToken] = useState(false);
 
+  const [projectPages, setProjectPages] = useState(1);
+  const [projectViewPages, setProjectViewPages] = useState(1);
+  const [projectPrivatePages, setProjectPrivatePages] = useState(1);
+
   const goToNewProject = () => {
     navigate('/NewProject');
   }
@@ -42,23 +47,51 @@ function Profile() {
   const validateToken = () => {
     const token = document.getElementById('view_token').value;
     const username = params.username;
-    dispatch(accessViewProjects({token, username})).then((result) => {
+    const query = getQuery();
+    dispatch(accessViewProjects({
+      token, 
+      username,
+      query,
+      page: query.private_view_page ? query.private_view_page - 1 : 0,
+    })).then((result) => {
       if (result.payload.success) {
-        console.log("asdasfas")
         localStorage.setItem(`${username}_token`, token);
         setValidToken(true);
+        setProjectViewPages(result.payload.pages);
         dispatch(reset());
       }
     });
   }
 
+  const getQuery = () => {
+    let search = window.location.search;
+    let query = search.replace('?', '').split('&');
+    let query_obj = {};
+    query.forEach((item) => {
+      let key = item.split('=')[0];
+      let value = item.split('=')[1];
+      if (key.includes('page')) {
+        query_obj[key] = parseInt(value);
+      } else{
+        query_obj[key] = value;
+      }
+    });
+    console.log(query_obj);
+    if (!query_obj.page) {
+      query_obj.page = 0;
+    }
+    return query_obj;
+  }
+
   const validateStorageToken = () => {
     const token = localStorage.getItem(`${params.username}_token`);
     const username = params.username;
-    dispatch(accessViewProjects({token, username})).then((result) => {
+    const query = getQuery();
+    dispatch(accessViewProjects({token, username, query, page: query.private_view_page ? query.private_view_page - 1 : 0})).then((result) => {
       if (result.payload.success) {
         localStorage.setItem(`${username}_token`, token);
         setValidToken(true);
+        setProjectViewPages(result.payload.pages);
       } else {
         localStorage.removeItem(`${username}_token`);
         setValidToken(false);
@@ -72,54 +105,36 @@ function Profile() {
     }
   }, []);
 
-  const switchToPrivateView = () => {
-    document.getElementById('nav-private-view-tab').classList.add('active');
-    document.getElementById('nav-public-tab').classList.remove('active');
-    document.getElementById('nav-public').classList.remove('show');
-    document.getElementById('nav-public').classList.remove('active');
-    document.getElementById('nav-private-view').classList.add('show');
-    document.getElementById('nav-private-view').classList.add('active');
-    document.getElementById('nav-private-tab').classList.remove('active');
-    document.getElementById('nav-private').classList.remove('show');
-    document.getElementById('nav-private').classList.remove('active');
-  }
-
-  const switchToPublic = () => {
-    document.getElementById('nav-private-view-tab').classList.remove('active');
-    document.getElementById('nav-public-tab').classList.add('active');
-    document.getElementById('nav-public').classList.add('show');
-    document.getElementById('nav-public').classList.add('active');
-    document.getElementById('nav-private-view').classList.remove('show');
-    document.getElementById('nav-private-view').classList.remove('active');
-    document.getElementById('nav-private-tab').classList.remove('active');
-    document.getElementById('nav-private').classList.remove('show');
-    document.getElementById('nav-private').classList.remove('active');
-  }
-
-  const switchToPrivate = () => {
-    document.getElementById('nav-private-view-tab').classList.remove('active');
-    document.getElementById('nav-public-tab').classList.remove('active');
-    document.getElementById('nav-public').classList.remove('show');
-    document.getElementById('nav-public').classList.remove('active');
-    document.getElementById('nav-private-view').classList.remove('show');
-    document.getElementById('nav-private-view').classList.remove('active');
-    document.getElementById('nav-private-tab').classList.add('active');
-    document.getElementById('nav-private').classList.add('show');
-    document.getElementById('nav-private').classList.add('active');
-  }
-
   useEffect(() => {
     dispatch(getUser(params.username));
-    dispatch(getProjects({username: params.username, orderBy: 'updatedAt'}));
+    const query = getQuery();
+    console.log(query.projects_page - 1);
+    dispatch(getProjects({username: params.username, orderBy: 'updatedAt', query, page: query.projects_page ? query.projects_page - 1 : 0})).then((result) => {
+      if (result.payload.success) {
+        setProjectPages(result.payload.pages);
+      }
+    });
     if (user) {
     if (user.username === params.username){
       setIsUser(true);
       dispatch(getMyProjects({
-        visibility: 'private'
-      }));
+        visibility: 'private',
+        query,
+        page: query.private_projects_page ? query.private_projects_page - 1 : 0,
+      })).then((result) => {
+        if (result.payload.success) {
+          setProjectPrivatePages(result.payload.pages);
+        }
+      });
       dispatch(getMyProjects({
-        visibility: 'private view'
-      }));
+        visibility: 'private view',
+        query,
+        page: query.private_view_page ? query.private_view_page - 1 : 0,
+      })).then((result) => {
+        if (result.payload.success) {
+          setProjectViewPages(result.payload.pages);
+        }
+      });
     }
   }
   }, [dispatch, params, user]);
@@ -160,9 +175,9 @@ function Profile() {
         </div>
       <nav>
   <div className="nav nav-tabs" id="nav-tab" role="tablist">
-    <button className="nav-link active" id="nav-public-tab" onClick={switchToPublic} data-bs-toggle="tab" data-bs-target="#nav-public" type="button" role="tab" aria-controls="nav-public" aria-selected="true">Public</button>
-    <button className="nav-link" onClick={switchToPrivateView} id="nav-private-view-tab" data-bs-toggle="tab" data-bs-target="#nav-private-view" type="button" role="tab" aria-controls="nav-private-view" aria-selected="false">Private View</button>
-    {isUser && <button className="nav-link" id="nav-private-tab" onClick={switchToPrivate} data-bs-toggle="tab" data-bs-target="#nav-private" type="button" role="tab" aria-controls="nav-private" aria-selected="false">Private</button>}
+    <button className="nav-link active" id="nav-public-tab" data-bs-toggle="tab" data-bs-target="#nav-public" type="button" role="tab" aria-controls="nav-public" aria-selected="true">Public</button>
+    <button className="nav-link" id="nav-private-view-tab" data-bs-toggle="tab" data-bs-target="#nav-private-view" type="button" role="tab" aria-controls="nav-private-view" aria-selected="false">Private View</button>
+    {isUser && <button className="nav-link" id="nav-private-tab" data-bs-toggle="tab" data-bs-target="#nav-private" type="button" role="tab" aria-controls="nav-private" aria-selected="false">Private</button>}
   </div>
 </nav>
 <div className="tab-content" id="nav-tabContent">
@@ -174,6 +189,7 @@ function Profile() {
       )) :  <div className='center-div'>
       <h3>No Public Projects</h3> 
       </div>}
+      <Pagination pages={projectPages} queryPage={'projects_page'}/>
   </div>
   <div className="tab-pane fade" id="nav-private-view" role="tabpanel" aria-labelledby="nav-private-view-tab">
     {!isUser ? ( !validToken ? 
@@ -191,6 +207,7 @@ function Profile() {
               </div> )) : <div className='center-div'>
                 <h3>No Priavte view Projects</h3> 
                 </div>}
+                <Pagination pages={projectViewPages} queryPage={'private_view_page'}/>
             </div>
     )) : (
       <div>
@@ -200,6 +217,7 @@ function Profile() {
           </div> )) : <div className='center-div'>
             <h3>No Priavte view Projects</h3> 
             </div>}
+            <Pagination pages={projectViewPages} queryPage={'private_view_page'}/>
         </div>
     )}
   </div>
@@ -210,6 +228,7 @@ function Profile() {
           </div> )) : <div className='center-div'>
             <h3>No Priavte Projects</h3> 
             </div> }
+            <Pagination pages={projectPrivatePages} queryPage={'private_projects_page'}/>
   </div> }
 </div>
       </div>

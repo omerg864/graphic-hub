@@ -30,13 +30,13 @@ function Home() {
 
   useEffect(() => {
     let query_obj = getQuery();
-    dispatch(getProjects({...query_obj, page: query_obj.top_page ? query_obj.top_page : 0 ,orderBy: 'likes', type: 'top'})).then((result) => {
+    dispatch(getProjects({...query_obj, page: query_obj.top_page ? query_obj.top_page - 1 : 0 ,orderBy: 'likes', type: 'top'})).then((result) => {
       if (result.payload.success) {
         setTopPages(result.payload.pages);
       }
     });
     if (user) {
-    dispatch(getProjects({...query_obj, page: query_obj.follow_page ? query_obj.follow_page : 0, orderBy: 'UpdatedAt', type: 'follow', following: user.following})).then((result) => {
+    dispatch(getProjects({...query_obj, page: query_obj.follow_page ? query_obj.follow_page - 1 : 0, orderBy: 'UpdatedAt', type: 'follow', following: user.following})).then((result) => {
       if (result.payload.success) {
         setFollowPages(result.payload.pages);
       }
@@ -52,7 +52,7 @@ function Home() {
       let key = item.split('=')[0];
       let value = item.split('=')[1];
       if (key.includes('page')) {
-        query_obj[key] = parseInt(value) - 1;
+        query_obj[key] = parseInt(value);
       } else{
         query_obj[key] = value;
       }

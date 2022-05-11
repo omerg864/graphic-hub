@@ -31,7 +31,7 @@ const getProjects = asyncHandler(async (req, res, next) => {
                 res.status(404);
                 throw new Error('User not found');
             }
-            var projects = await Project.find({user: user, visibility: "public"}).populate(populate_user).sort({[query.orderBy]: -1}).limit(8).skip(page * 8);
+            var projects = await Project.find({user: user, visibility: "public"}).populate(populate_user).sort({[query.orderBy]: -1});
             var pages = Math.ceil(projects.length / 8);
             projects = projects.slice(page * 8, page * 8 + 8);
         } else if (Object.keys(query).includes('username')) {
@@ -194,19 +194,27 @@ const getProject = asyncHandler(async (req, res, next) => {
 
 const getMyProjects = asyncHandler(async (req, res, next) => {
     const visibility = req.query.visibility;
-    const projects = await Project.find({user: req.user, visibility: visibility}).populate(populate_user);
+    const page = req.query.page || 0;
+    var projects = await Project.find({user: req.user, visibility: visibility}).populate(populate_user);
+    const pages = Math.ceil(projects.length / 8);
+    projects = projects.slice(page * 8, page * 8 + 8);
     res.status(200).json({
         success: true,
-        projects: projects
+        projects: projects,
+        pages: pages
     });
 });
 
 const getViewProjects = asyncHandler(async (req, res, next) => {
     const user = await User.findOne({username: req.body.username});
     const projects = await Project.find({user: user.id, visibility: 'private view'}).populate(populate_user);
+    const page = req.query.page || 0;
+    var pages = Math.ceil(projects.length / 8);
+    projects = projects.slice(page * 8, page * 8 + 8);
     res.status(200).json({
         success: true,
-        projects: projects
+        projects: projects,
+        pages: pages
     });
 });
 

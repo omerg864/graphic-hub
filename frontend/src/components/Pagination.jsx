@@ -12,14 +12,14 @@ function Pagination({ pages, queryPage }) {
           let key = split[0];
           let value = split[1];
           if (key.includes('page')) {
-            query_obj[key] = parseInt(value) - 1;
+            query_obj[key] = parseInt(value);
           } else{
               query_obj[key] = value;
           }
         }
         });
         if (!query_obj[queryPage]) {
-          query_obj[queryPage] = 0;
+          query_obj[queryPage] = 1;
         }
         return query_obj;
       }
@@ -55,11 +55,11 @@ function Pagination({ pages, queryPage }) {
     <div className="center-div" style={{marginTop: '20px', marginBottom: '10px'}}>
       <nav aria-label="Page navigation example">
   <ul class="pagination">
-  {getQuery()[queryPage] > 0 && <li class="page-item"><a class="page-link" href={addtoQueryString(0)}>Previous</a></li>}
+  {pages > 1 && getQuery()[queryPage] > 1 && <li class="page-item"><a class="page-link" href={addtoQueryString(-1)}>Previous</a></li>}
     {getArray(pages).map(page => (
-      <li class={"page-item" + (page - 1 == getQuery()[queryPage] ? ' active' : '')}><a class="page-link" href={getQueryString(page)}>{page}</a></li>
+      <li class={"page-item" + (page == getQuery()[queryPage] ? ' active' : '')}><a class="page-link" href={getQueryString(page)}>{page}</a></li>
     ))}
-    {getQuery()[queryPage] + 1 != pages && <li class="page-item"><a class="page-link" href={addtoQueryString(2)}>Next</a></li>}
+    {pages > 1 && getQuery()[queryPage] != pages && <li class="page-item"><a class="page-link" href={addtoQueryString(1)}>Next</a></li>}
   </ul>
 </nav>
 </div>
