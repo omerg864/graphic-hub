@@ -8,6 +8,7 @@ import { reset, updateUser } from '../features/auth/authSlice';
 import { GiToken } from 'react-icons/gi';
 import {BsTrash} from 'react-icons/bs';
 import { TiEdit } from 'react-icons/ti';
+import Pagination from '../components/Pagination';
 
 
 function Settings() {
@@ -25,6 +26,8 @@ function Settings() {
     company: '',
   });
 
+  const [Tokenpages, setTokenpages] = useState(1);
+
   const view_tokens_state = useSelector((state) => state.viewToken);
   const viewTokens = view_tokens_state.viewTokens;
   const isLoading2 = view_tokens_state.isLoading;
@@ -34,7 +37,12 @@ function Settings() {
 
   useEffect(() => {
     if (user) {
-    dispatch(getViewTokens());
+      const query = getQuery();
+    dispatch(getViewTokens({...query, page: query.page ? query.page - 1 : 0 })).then((result) => {
+      if (result.payload.success){
+        setTokenpages(result.payload.pages);
+      }
+    });
     setUserData({
       f_name: user.f_name,
       l_name: user.l_name,
@@ -44,6 +52,26 @@ function Settings() {
     });
   }
   }, []);
+
+  const getQuery = () => {
+    let search = window.location.search;
+    let query = search.replace('?', '').split('&');
+    let query_obj = {};
+    query.forEach((item) => {
+      let key = item.split('=')[0];
+      let value = item.split('=')[1];
+      if (key.includes('page')) {
+        query_obj[key] = parseInt(value);
+      } else{
+        query_obj[key] = value;
+      }
+    });
+    console.log(query_obj);
+    if (!query_obj.page) {
+      query_obj.page = 0;
+    }
+    return query_obj;
+  }
 
   const dataChange = (e) => {
     setUserData((prevState) => ({
@@ -201,6 +229,7 @@ function Settings() {
                   </div>
                   </div>
               ))}
+              <Pagination pages={Tokenpages} queryPage="page" />
               </div>
               </div>
           </div>

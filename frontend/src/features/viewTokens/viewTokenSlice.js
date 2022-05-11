@@ -15,10 +15,10 @@ const initialState = {
     message: ""
 }
 
-export const getViewTokens = createAsyncThunk("viewTokens/getAll", async (_,thunkAPI) => {
+export const getViewTokens = createAsyncThunk("viewTokens/getAll", async (query,thunkAPI) => {
     try {
         const token = thunkAPI.getState().auth.user.token;
-        const response = await viewTokenService.getViewTokens(token);
+        const response = await viewTokenService.getViewTokens(query, token);
         return response.data;
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();

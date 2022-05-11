@@ -4,10 +4,14 @@ import crypto from 'crypto';
 
 
 const getTokens = asyncHandler(async (req, res, next) => {
-    const tokens = await ViewToken.find({user: req.user._id}).sort({expires: 1});
+    const page = req.query.page || 0;
+    var tokens = await ViewToken.find({user: req.user._id}).sort({expires: 1});
+    const pages = Math.ceil(tokens.length / 3);
+    tokens = tokens.slice(page * 3, page * 3 + 3);
     res.status(200).json({
         success: true,
-        tokens: tokens
+        tokens: tokens,
+        pages: pages
     });
 });
 

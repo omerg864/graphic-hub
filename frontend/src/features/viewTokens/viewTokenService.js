@@ -4,8 +4,9 @@ const API_URL = '/api/viewTokens/';
 
 
 
-const getViewTokens = async (token) => {
-    const response = await axios.get(API_URL, {
+const getViewTokens = async (query, token) => {
+    var query_string = new URLSearchParams(query).toString();
+    const response = await axios.get(API_URL + `?${query_string}`, {
         headers: {
             Authorization: `Bearer ${token}`,
             accepts:"application/json"
