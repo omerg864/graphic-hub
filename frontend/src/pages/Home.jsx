@@ -30,13 +30,13 @@ function Home() {
 
   useEffect(() => {
     let query_obj = getQuery();
-    dispatch(getProjects({...query_obj ,orderBy: 'likes', type: 'top'})).then((result) => {
+    dispatch(getProjects({...query_obj, page: query_obj.top_page ? query_obj.top_page : 0 ,orderBy: 'likes', type: 'top'})).then((result) => {
       if (result.payload.success) {
         setTopPages(result.payload.pages);
       }
     });
     if (user) {
-    dispatch(getProjects({...query_obj, orderBy: 'UpdatedAt', type: 'follow', following: user.following})).then((result) => {
+    dispatch(getProjects({...query_obj, page: query_obj.follow_page ? query_obj.follow_page : 0, orderBy: 'UpdatedAt', type: 'follow', following: user.following})).then((result) => {
       if (result.payload.success) {
         setFollowPages(result.payload.pages);
       }
@@ -51,8 +51,10 @@ function Home() {
     query.forEach((item) => {
       let key = item.split('=')[0];
       let value = item.split('=')[1];
-      if (key === 'page') {
+      if (key.includes('page')) {
         query_obj[key] = parseInt(value) - 1;
+      } else{
+        query_obj[key] = value;
       }
     });
     console.log(query_obj);
@@ -121,7 +123,7 @@ function Home() {
           )
       ))}
       </div>
-      <Pagination pages={toppages} />
+      <Pagination pages={toppages} queryPage="top_page" />
     </div>
     <div className="tab-pane fade" id="v-pills-follow" role="tabpanel" aria-labelledby="v-pills-follow-tab">
       {user ? (
@@ -131,7 +133,7 @@ function Home() {
         {projects.map((project) => (
           <ProjectItem key={project.id} project={project} isUser={false} top={false}/>
         ))}
-        <Pagination pages={followpages} />
+        <Pagination pages={followpages}  queryPage="follow_page" />
         </div>
       ): (<h2><Link to="/login">Login</Link> or <Link to="/register">Register</Link> to view followings projects</h2>)}
     </div>
