@@ -6,6 +6,7 @@ import {getProjects, reset} from '../features/projects/projectSlice';
 import {useParams, useNavigate, Link} from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ProjectItem from '../components/ProjectItem';
+import Pagination from '../components/Pagination';
 
 
 function Home() {
@@ -120,17 +121,7 @@ function Home() {
           )
       ))}
       </div>
-      <div className="center-div" style={{marginTop: '20px', marginBottom: '10px'}}>
-      <nav aria-label="Page navigation example">
-  <ul class="pagination">
-  {getQuery().page != 0 && <li class="page-item"><a class="page-link" href={`?page=${getQuery().page}`}>Previous</a></li>}
-    {getArray(toppages).map(page => (
-      <li class={"page-item" + (page - 1 == getQuery().page ? ' active' : '')}><a class="page-link" href={`?page=${page}`}>{page}</a></li>
-    ))}
-    {getQuery().page + 1 != toppages && <li class="page-item"><a class="page-link" href={`?page=${getQuery().page + 2}`}>Next</a></li>}
-  </ul>
-</nav>
-</div>
+      <Pagination pages={toppages} />
     </div>
     <div className="tab-pane fade" id="v-pills-follow" role="tabpanel" aria-labelledby="v-pills-follow-tab">
       {user ? (
@@ -140,17 +131,7 @@ function Home() {
         {projects.map((project) => (
           <ProjectItem key={project.id} project={project} isUser={false} top={false}/>
         ))}
-              <div className="center-div" style={{marginTop: '20px', marginBottom: '10px'}}>
-      <nav aria-label="Page navigation example">
-  <ul class="pagination">
-    {getQuery().page != 0 && <li class="page-item"><a class="page-link" href={`?page=${getQuery().page}`}>Previous</a></li>}
-    {getArray(followpages).map(page => (
-      <li class={"page-item" + (page - 1 == getQuery().page ? ' active' : '')}><a class="page-link" href={`?page=${page}`}>{page}</a></li>
-    ))}
-    {getQuery().page + 1 != followpages && <li class="page-item"><a class="page-link" href={`?page=${getQuery().page + 2}`}>Next</a></li>}
-  </ul>
-</nav>
-</div>
+        <Pagination pages={followpages} />
         </div>
       ): (<h2><Link to="/login">Login</Link> or <Link to="/register">Register</Link> to view followings projects</h2>)}
     </div>
