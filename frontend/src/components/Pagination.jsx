@@ -54,12 +54,12 @@ function Pagination({ pages, queryPage }) {
   return (
     <div className="center-div" style={{marginTop: '20px', marginBottom: '10px'}}>
       <nav aria-label="Page navigation example">
-  <ul class="pagination">
-  {pages > 1 && getQuery()[queryPage] > 1 && <li class="page-item"><a class="page-link" href={addtoQueryString(-1)}>Previous</a></li>}
+  <ul className="pagination">
+  {pages > 1 && getQuery()[queryPage] > 1 && <li className="page-item"><a className="page-link" href={addtoQueryString(-1)}>Previous</a></li>}
     {getArray(pages).map(page => (
-      <li class={"page-item" + (page == getQuery()[queryPage] ? ' active' : '')}><a class="page-link" href={getQueryString(page)}>{page}</a></li>
+      <li className={"page-item" + (page == getQuery()[queryPage] ? ' active' : '')}><a className="page-link" href={getQueryString(page)}>{page}</a></li>
     ))}
-    {pages > 1 && getQuery()[queryPage] != pages && <li class="page-item"><a class="page-link" href={addtoQueryString(1)}>Next</a></li>}
+    {pages > 1 && getQuery()[queryPage] != pages && <li className="page-item"><a className="page-link" href={addtoQueryString(1)}>Next</a></li>}
   </ul>
 </nav>
 </div>

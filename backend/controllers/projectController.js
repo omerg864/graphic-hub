@@ -1,7 +1,9 @@
 import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
 import Project from '../models/projectModel.js';
+import WorkFlow from '../models/workFlowModel.js';
 import { v2 as cloudinary } from 'cloudinary';
+import workFlowModel from '../models/workFlowModel.js';
 
 cloudinary.config({ 
     cloud_name: process.env.CLOUD_NAME, 
@@ -74,6 +76,21 @@ const getProjects = asyncHandler(async (req, res, next) => {
     }
 });
 
+const updateWorkFlow = async (user) => {
+    const today = new Date();
+    const workFlow = await WorkFlow.findOne({ user: user, date: new Date(today.getFullYear(), today.getMonth(), today.getDate()) });
+    if (workFlow) {
+        workFlow.jobs += 1;
+        await workFlow.save();
+    } else {
+        const newWorkFlow = await WorkFlow.create({
+            user: user,
+            date: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+            jobs: 1
+        });
+    }
+}
+
 const addProject = asyncHandler(async (req, res, next) => {
     const {name, description, visibility, images} = req.body;
     const checked_project = await Project.find({name: name, user: req.user});
@@ -88,6 +105,7 @@ const addProject = asyncHandler(async (req, res, next) => {
         visibility: visibility,
         images: images
     });
+    await updateWorkFlow(req.user);
     res.status(200).json({
         success: true,
         project: project
@@ -125,6 +143,7 @@ const updateProject = asyncHandler(async (req, res, next) => {
                 console.log(err);
             }
         });
+        await updateWorkFlow(req.user);
         var updatedProject = await Project.findByIdAndUpdate(id, {
             ...req.body
         }, {new: true}).populate(populate_user);

@@ -6,6 +6,7 @@ import userRoutes from "./routes/userRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import viewTokenRoutes from "./routes/viewTokenRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
+import workFlowRoutes from "./routes/workFlowRoutes.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
 import connectDB from "./config/db.js";
 const config = dotenv.config();
@@ -27,6 +28,7 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/viewTokens", viewTokenRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/workFlow", workFlowRoutes);
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/build')));

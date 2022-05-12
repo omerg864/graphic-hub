@@ -18,9 +18,7 @@ function ProjectItem({ project, isUser, top }) {
     const [isLiked, setIsLiked] = useState(false);
 
     const [likes, setLikes] = useState(0);
-
-    const {projects, isLoading, isSuccess, isError, message} = useSelector((state) => state.project);
-
+    
     useEffect(() => {
         if (user){
         if (project.likes.includes(user.username)) {

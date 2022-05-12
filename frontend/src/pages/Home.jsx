@@ -57,7 +57,6 @@ function Home() {
         query_obj[key] = value;
       }
     });
-    console.log(query_obj);
     if (!query_obj.page) {
       query_obj.page = 0;
     }
@@ -84,16 +83,7 @@ function Home() {
     }
 
   }, [isError, isError2, message, message2, dispatch]);
-
-  const getArray = (pages) => {
-    let array = [];
-    for (let i = 1; i <= pages; i++) {
-      array.push(i);
-    }
-    return array;
-  }
-
-
+  
 
   if (isLoading2 || isLoading) {
     return <Spinner />;

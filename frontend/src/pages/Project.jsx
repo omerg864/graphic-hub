@@ -71,7 +71,6 @@ const goToEdit = () => {
     dispatch(getProject({
       name: params.project,
       username: params.username})).then((result) => {
-        console.log(result);
           if (result.meta.requestStatus === 'rejected') {
             if (localStorage.getItem(`${params.username}_token`)) {
               dispatch(accessViewProject({

@@ -3,12 +3,14 @@ import Spinner from '../components/Spinner';
 import {useEffect, useState} from 'react';
 import { getUser, updateFollow, reset as user_reset } from '../features/auth/authSlice';
 import { getProjects, getMyProjects, accessViewProjects, reset } from '../features/projects/projectSlice';
+import { getWorkFlows } from '../features/workFlow/workFlowSlice';
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import ProjectItem from '../components/ProjectItem';
 import ProfileData from '../components/ProfileData';
 import { MdOutlineLibraryAdd } from 'react-icons/md';
 import Pagination from '../components/Pagination';
+import WorkFlowChart from '../components/WorkFlowChart';
 
 
 function Profile() {
@@ -19,6 +21,8 @@ function Profile() {
   const navigate = useNavigate();
 
   const {projects, private_projects, private_view_projects, isLoading, isSuccess, isError, message} = useSelector((state) => state.project);
+
+  const { workFlow } = useSelector((state) => state.workFlow);
 
   const user_state = useSelector((state) => state.auth);
 
@@ -76,7 +80,6 @@ function Profile() {
         query_obj[key] = value;
       }
     });
-    console.log(query_obj);
     if (!query_obj.page) {
       query_obj.page = 0;
     }
@@ -108,12 +111,12 @@ function Profile() {
   useEffect(() => {
     dispatch(getUser(params.username));
     const query = getQuery();
-    console.log(query.projects_page - 1);
     dispatch(getProjects({username: params.username, orderBy: 'updatedAt', query, page: query.projects_page ? query.projects_page - 1 : 0})).then((result) => {
       if (result.payload.success) {
         setProjectPages(result.payload.pages);
       }
     });
+    dispatch(getWorkFlows({username: params.username}));
     if (user) {
     if (user.username === params.username){
       setIsUser(true);
@@ -175,13 +178,17 @@ function Profile() {
         </div>
       <nav>
   <div className="nav nav-tabs" id="nav-tab" role="tablist">
-    <button className="nav-link active" id="nav-public-tab" data-bs-toggle="tab" data-bs-target="#nav-public" type="button" role="tab" aria-controls="nav-public" aria-selected="true">Public</button>
+  <button className="nav-link active" id="nav-work-tab" data-bs-toggle="tab" data-bs-target="#nav-work" type="button" role="tab" aria-controls="nav-work" aria-selected="true">Work</button>
+    <button className="nav-link" id="nav-public-tab" data-bs-toggle="tab" data-bs-target="#nav-public" type="button" role="tab" aria-controls="nav-public" aria-selected="false">Public</button>
     <button className="nav-link" id="nav-private-view-tab" data-bs-toggle="tab" data-bs-target="#nav-private-view" type="button" role="tab" aria-controls="nav-private-view" aria-selected="false">Private View</button>
     {isUser && <button className="nav-link" id="nav-private-tab" data-bs-toggle="tab" data-bs-target="#nav-private" type="button" role="tab" aria-controls="nav-private" aria-selected="false">Private</button>}
   </div>
 </nav>
 <div className="tab-content" id="nav-tabContent">
-  <div className="tab-pane fade show active" id="nav-public" role="tabpanel" aria-labelledby="nav-public-tab">
+<div className="tab-pane fade show active" id="nav-work" role="tabpanel" aria-labelledby="nav-work-tab">
+  {workFlow.length > 0 && <WorkFlowChart workFlow={workFlow}/>}
+</div>
+  <div className="tab-pane fade" id="nav-public" role="tabpanel" aria-labelledby="nav-public-tab">
   {projects.length > 0 ? projects.map(project => (
         <div key={project.id}>
           <ProjectItem key={project.id} project={project} isUser={isUser} top={false}/>

@@ -66,7 +66,6 @@ function Settings() {
         query_obj[key] = value;
       }
     });
-    console.log(query_obj);
     if (!query_obj.page) {
       query_obj.page = 0;
     }
