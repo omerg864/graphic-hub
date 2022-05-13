@@ -9,6 +9,13 @@ import messageRoutes from "./routes/messageRoutes.js";
 import workFlowRoutes from "./routes/workFlowRoutes.js";
 import { errorHandler } from "./middleWare/errorMiddleware.js";
 import connectDB from "./config/db.js";
+import { fileURLToPath } from 'url';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 const config = dotenv.config();
 
 connectDB();
