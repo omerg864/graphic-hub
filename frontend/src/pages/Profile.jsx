@@ -74,7 +74,7 @@ function Profile() {
     query.forEach((item) => {
       let key = item.split('=')[0];
       let value = item.split('=')[1];
-      if (key.includes('page')) {
+      if (key.includes('page') || key.includes('year')) {
         query_obj[key] = parseInt(value);
       } else{
         query_obj[key] = value;
@@ -186,7 +186,7 @@ function Profile() {
 </nav>
 <div className="tab-content" id="nav-tabContent">
 <div className="tab-pane fade show active" id="nav-work" role="tabpanel" aria-labelledby="nav-work-tab">
-  {workFlow.length > 0 && <WorkFlowChart workFlow={workFlow}/>}
+  <WorkFlowChart workFlow={workFlow} now={getQuery().year ? false : true}/>
 </div>
   <div className="tab-pane fade" id="nav-public" role="tabpanel" aria-labelledby="nav-public-tab">
   {projects.length > 0 ? projects.map(project => (

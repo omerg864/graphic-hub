@@ -2,22 +2,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import HeatMap from '@uiw/react-heat-map';
 
 
-function WorkFlowChart({workFlow}) {
+function WorkFlowChart({workFlow, now}) {
 
-  console.log(workFlow[0].date);
+  var value = [];
 
-  const value = [
-    ...workFlow,
-    { date: '2016/01/11', count:2 },
-    { date: '2016/04/12', count:2 },
-    { date: '2016/05/01', count:5 },
-    { date: '2016/05/02', count:5 },
-    { date: '2016/05/03', count:1 },
-    { date: '2016/05/04', count:11 },
-    { date: '2016/05/08', count:32 },
-  ];
-
-  console.log(value);
+  for (var i in workFlow) {
+    console.log(workFlow[i].date);
+    value.push({ date: workFlow[i].date, count: workFlow[i].count });
+  }
   
 
     const getQuery = () => {
@@ -47,7 +39,8 @@ function WorkFlowChart({workFlow}) {
     <div className="card">
     <div className="card-body">
         <h3 className="card-title">Work Flow of past year</h3>
-        <HeatMap value={value} startDate={new Date('2022/01/01')}/>
+        <HeatMap width={900} rectSize={14} value={value} startDate={now ? new Date(`${new Date().getFullYear() - 1}/${new Date().getMonth() + 1}/${new Date().getDate()}`) : 
+        new Date(`${getQuery().year}/01/01`)} endDate={now ? new Date() : new Date(`${getQuery().year}/12/31`)} />
     </div>
 </div>
   )

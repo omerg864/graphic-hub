@@ -12,8 +12,10 @@ const getWorkFlow = asyncHandler(async (req, res, next) => {
     }
     var workFlow = await WorkFlow.find({date: {$gte: new Date(date.getFullYear() - 1, date.getMonth(), date.getDate()), $lte: date}, user: user._id}).sort({date: 1});
     var sortedWorkFlow = [];
+    var workflow_obj = {};
     workFlow.map(workFlow => {
-        sortedWorkFlow.push({date : `${workFlow.date.getFullYear()}/${workFlow.date.getMonth()}/${workFlow.date.getDate()}`, count: workFlow.jobs});
+        workflow_obj = {date : `${workFlow.date.getFullYear()}/${workFlow.date.getMonth() + 1}/${workFlow.date.getDate()}`, count: workFlow.jobs};
+        sortedWorkFlow.push(workflow_obj);
     });
     res.status(200).json({
         success: true,
