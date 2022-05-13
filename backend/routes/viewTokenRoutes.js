@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import {getTokens, addToken, updateToken, deleteToken, VerifyToken, getToken} from '../controllers/viewTokenController.js';
-import {protectUser} from '../middleware/authMiddleware.js';
+import {protectUser} from '../middleWare/authMiddleware.js';
 
 router.route('/').get(protectUser, getTokens).post(protectUser, addToken);
 

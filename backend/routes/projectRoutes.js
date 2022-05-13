@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import {getProjects, addProject, updateProject, deleteProject, getProject, getMyProjects, searchProjects, getViewProjects, getViewProject} from '../controllers/projectController.js';
-import { protectUser, getUserSign, verifyViewToken } from '../middleware/authMiddleware.js';
+import { protectUser, getUserSign, verifyViewToken } from '../middleWare/authMiddleware.js';
 
 router.route('/').get(getProjects).post(protectUser, addProject);
 

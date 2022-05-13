@@ -7,7 +7,7 @@ import projectRoutes from "./routes/projectRoutes.js";
 import viewTokenRoutes from "./routes/viewTokenRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import workFlowRoutes from "./routes/workFlowRoutes.js";
-import { errorHandler } from "./middleware/errorMiddleware.js";
+import { errorHandler } from "./middleWare/errorMiddleware.js";
 import connectDB from "./config/db.js";
 const config = dotenv.config();
 

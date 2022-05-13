@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import {getMessages, sendMessage, deleteMessage, getChats, deleteChat} from '../controllers/messageController.js';
-import {protectUser} from '../middleware/authMiddleware.js';
+import {protectUser} from '../middleWare/authMiddleware.js';
 
 router.route('/').post(protectUser, sendMessage);
 
