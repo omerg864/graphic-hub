@@ -18,6 +18,10 @@ function Register() {
     });
     const {f_name, l_name, username, email, company, password, password2} = formData;
 
+    const username_regex = /^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$/;
+
+    const password_regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$/;
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -42,9 +46,40 @@ function Register() {
     }
 
     const onSubmit = async e => {
+        const password_input = document.getElementById("password");
+        const password2_input = document.getElementById("password2");
+        const username_input = document.getElementById("username");
         e.preventDefault();
         if(password !== password2){
             toast.error("Passwords do not match");
+            password_input.style.borderColor = '#ff4c4c';
+            password_input.classList.add('error');
+            setTimeout(function() {
+                password_input.classList.remove('error');
+            }, 300);
+            password2_input.style.borderColor = '#ff4c4c';
+            password2_input.classList.add('error');
+            setTimeout(function() {
+                password2_input.classList.remove('error');
+            }, 300);
+            return;
+        }
+        if (!username_regex.test(username)){
+            toast.error("Username must be between 3 and 18 characters and can only contain letters, numbers, underscores, and dashes");
+            username_input.style.borderColor = '#ff4c4c';
+            username_input.classList.add('error');
+            setTimeout(function() {
+                username_input.classList.remove('error');
+            }, 300);
+            return;
+        }
+        if (!password_regex.test(password)){
+            toast.error("Password must be between 8 and 32 characters and must contain at least one number, one uppercase letter, and one lowercase letter");
+            password_input.style.borderColor = '#ff4c4c';
+            password_input.classList.add('error');
+            setTimeout(function() {
+                password_input.classList.remove('error');
+            }, 300);
             return;
         }
         dispatch(register({f_name, l_name, username, email, company, password}));

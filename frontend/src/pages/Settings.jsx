@@ -9,6 +9,7 @@ import { GiToken } from 'react-icons/gi';
 import {BsTrash} from 'react-icons/bs';
 import { TiEdit } from 'react-icons/ti';
 import Pagination from '../components/Pagination';
+import { FaUserGraduate } from 'react-icons/fa';
 
 
 function Settings() {
@@ -24,7 +25,12 @@ function Settings() {
     email: '',
     info: '',
     company: '',
+    username: '',
   });
+
+  const username_regex = /^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$/;
+
+  const password_regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$/;
 
   const [Tokenpages, setTokenpages] = useState(1);
 
@@ -49,6 +55,7 @@ function Settings() {
       email: user.email,
       info: user.info,
       company: user.company,
+      username: user.username,
     });
   }
   }, []);
@@ -100,6 +107,17 @@ function Settings() {
   }
 
   const saveUser = () => {
+    const username_input = document.getElementById('username');
+    if (!username_regex.test(userData.username)) {
+      toast.error("Username must be between 3 and 18 characters and can only contain letters, numbers, underscores, and dashes");
+      username_input.style.borderColor = '#ff4c4c';
+      username_input.classList.add('error');
+      setTimeout(function() {
+          username_input.classList.remove('error');
+      }, 300);
+      return;
+    }
+
     var image = document.getElementById('image').files[0];
     if (image) {
     dispatch(updateUser({...userData, img_url: image, image: true, deleteImage: user.img_url ? user.img_url : ""}));
@@ -170,10 +188,6 @@ function Settings() {
                   <div className="form-group">
                   <label htmlFor="exampleInputUsername">Username</label>
                   <input type="text" className="form-control" id="username" name="username" placeholder="Username" value={userData.username} onChange={dataChange} />
-                  </div>
-                <div className="form-group">
-                  <label htmlFor="exampleInputPassword">Password</label>
-                  <input type="password" className="form-control" id="password" name="password" placeholder="Password" />
                   </div>
                   <div className="form-group">
                   <label htmlFor="exampleInputBio">Bio</label>
