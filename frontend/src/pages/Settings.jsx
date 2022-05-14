@@ -30,8 +30,6 @@ function Settings() {
 
   const username_regex = /^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$/;
 
-  const password_regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$/;
-
   const [Tokenpages, setTokenpages] = useState(1);
 
   const view_tokens_state = useSelector((state) => state.viewToken);
@@ -136,6 +134,10 @@ function Settings() {
     toast.success('User data updated');
   }
 
+  const goToPassword = () => {
+    navigate('/changePassword');
+  }
+
   useEffect(() => {
     if (isSuccess) {
       dispatch(reset());
@@ -213,7 +215,10 @@ function Settings() {
                   <input type="file" className="form-control" id="image" name="image" />
                   </div>
                 <div style={{marginTop: '20px'}}>
+                  <div className="space">
                   <button type="button" className="btn btn-primary" onClick={saveUser}>Save</button>
+                  <button type="button" className="btn btn-info" onClick={goToPassword}>Change Password</button>
+                  </div>
                 </div>
                 </div>
                 </div>

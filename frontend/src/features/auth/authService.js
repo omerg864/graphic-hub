@@ -88,6 +88,16 @@ const updateUser = async (data, token) => {
     }
 }
 
+const updatePassword = async (data, token) => {
+    const response = await axios.put(API_URL + "password", data, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            accepts: 'application/json'
+        }
+    });
+    return response;
+}
+
 
 const authService = {
     register,
@@ -98,7 +108,8 @@ const authService = {
     updateFollow,
     searchUser,
     getUserByid,
-    updateUser
+    updateUser,
+    updatePassword
 };
 
 export default authService;

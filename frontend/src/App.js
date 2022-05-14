@@ -21,6 +21,7 @@ import Popper from 'popper.js';
 import EditProject from './pages/EditProject';
 import NewToken from './pages/NewToken';
 import EditToken from './pages/EditToken';
+import PasswordChange from './pages/PasswordChange';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route path="/:username/:project/edit" element={<EditProject/>} />
         <Route path="/NewToken" element={<NewToken/>} />
         <Route path="/EditToken/:id" element={<EditToken/>} />
+        <Route path="/changePassword/" element={<PasswordChange/>} />
       </Routes>
     </div>
     </Router>

@@ -161,6 +161,28 @@ const updateUser = asyncHandler(async (req, res, next) => {
     });
 });
 
+const updatePassword = asyncHandler(async (req, res, next) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+        res.status(400)
+        throw new Error('User does not exist');
+    }
+    const { oldPassword, password } = req.body;
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+        res.status(400)
+        throw new Error('Invalid password');
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, {
+        password: hashedPassword
+    }, { new: true });
+    res.status(200).json({
+        success: true
+    });
+});
+
 const updateFollow = asyncHandler(async (req, res, next) => {
     const {username} = req.params;
     const user = await User.findOne({username: username});
@@ -235,4 +257,4 @@ const getUserByid = asyncHandler(async (req, res, next) => {
 });
 
 
-export {registerUser, loginUser, getUser, verifyUser, updateFollow, searchUser, getUserByid, updateUser};
+export {registerUser, loginUser, getUser, verifyUser, updateFollow, searchUser, getUserByid, updateUser, updatePassword};
