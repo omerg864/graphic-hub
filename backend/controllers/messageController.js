@@ -2,6 +2,10 @@ import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
 import Message from '../models/messageModel.js';
 
+const populate_reciever = {path: 'reciever', select: ['-password', '-__v', '-createdAt', '-updatedAt', '-verified', '-reset_token']};
+
+const populate_sender = {path: 'sender', select: ['-password', '-__v', '-createdAt', '-updatedAt', '-verified', '-reset_token']};
+
 const getMessages = asyncHandler(async (req, res, next) => {
     const {username} = req.params;
     const query = req.query;
@@ -18,7 +22,7 @@ const getMessages = asyncHandler(async (req, res, next) => {
 const getChats = asyncHandler(async (req, res, next) => {
     const chats = await Message.find({
         $or: [{sender: req.user._id}, {receiver: req.user._id}]
-    }).populate('sender').populate('receiver').sort({createdAt: -1});
+    }).populate(populate_sender).populate(populate_reciever).sort({createdAt: -1});
     const chats_sorted = [];
     const ids = []
     chats.forEach(chat => {

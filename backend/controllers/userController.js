@@ -35,7 +35,8 @@ const registerUser = asyncHandler(async (req, res, next) => {
         email: email,
         password: hashedPassword,
         company: company,
-        verified: false
+        verified: false,
+        intro: ""
     });
     sendEmail(user.email, 'Verify your email', `Please verify your email by clicking on the link: ${process.env.HOST_ADDRESS}/verify/${user._id}`);
     res.status(201).json({
@@ -54,7 +55,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
 
 const loginUser = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    var user = await User.findOne({ email });
     if (!user) {
         res.status(400)
         throw new Error('Invalid email or password');
@@ -69,6 +70,11 @@ const loginUser = asyncHandler(async (req, res, next) => {
         throw new Error('Please verify your email');
     }
     const token = generateToken(user._id);
+    delete user._doc["password"]
+    delete user._doc["reset_token"]
+    delete user._doc["createdAt"]
+    delete user._doc["updatedAt"]
+    delete user._doc["__v"]
     res.status(200).json({
         success: true,
         user: {
@@ -79,7 +85,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
 });
 
 const getUser = asyncHandler(async (req, res, next) => {
-    const user = await User.findOne({username: req.params.username}).select('-password');
+    const user = await User.findOne({username: req.params.username}).select('-password', "-reset_token", "-__v", "createdAt", "updatedAt");
     if (!user) {
         res.status(400)
         throw new Error('User does not exist');
@@ -246,12 +252,12 @@ const updateFollow = asyncHandler(async (req, res, next) => {
             $pull: {
                 followers: req.user.username
             }
-        }, {new: true}).select('-password');
+        }, {new: true}).select('-password', "-reset_token", "-__v", "createdAt", "updatedAt");
         const me = await User.findByIdAndUpdate(req.user._id, {
             $pull: {
                 following: user.username
             }
-        }, {new: true}).select('-password');
+        }, {new: true}).select('-password', "-reset_token", "-__v", "createdAt", "updatedAt");
         res.status(200).json({
             success: true,
             friend: updatedUser,
@@ -262,12 +268,12 @@ const updateFollow = asyncHandler(async (req, res, next) => {
             $push: {
                 followers: req.user.username
             }
-        }, {new: true}).select('-password');
+        }, {new: true}).select('-password', "-reset_token", "-__v", "createdAt", "updatedAt");
         const me = await User.findByIdAndUpdate(req.user._id, {
             $push: {
                 following: user.username
             }
-        }, {new: true}).select('-password');
+        }, {new: true}).select('-password', "-reset_token", "-__v", "createdAt", "updatedAt");
         res.status(200).json({
             success: true,
             friend: updatedUser,
@@ -288,7 +294,7 @@ const searchUser = asyncHandler(async (req, res, next) => {
             {email: {$regex: username, $options: 'i'}}
 
         ]
-    }).select('-password');
+    }).select('-password', "-reset_token", "-__v", "createdAt", "updatedAt");
     res.status(200).json({
         success: true,
         users: users
@@ -296,7 +302,7 @@ const searchUser = asyncHandler(async (req, res, next) => {
 });
 
 const getUserByid = asyncHandler(async (req, res, next) => {
-    const user = await User.findById(req.params.id).select('-password');
+    const user = await User.findById(req.params.id).select('-password', "-reset_token", "-__v", "createdAt", "updatedAt");
     if (!user) {
         res.status(400)
         throw new Error('User does not exist');

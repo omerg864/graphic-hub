@@ -7,7 +7,6 @@ function WorkFlowChart({workFlow, now}) {
   var value = [];
 
   for (var i in workFlow) {
-    console.log(workFlow[i].date);
     value.push({ date: workFlow[i].date, count: workFlow[i].count });
   }
   
