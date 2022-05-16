@@ -22,6 +22,8 @@ import EditProject from './pages/EditProject';
 import NewToken from './pages/NewToken';
 import EditToken from './pages/EditToken';
 import PasswordChange from './pages/PasswordChange';
+import ResetPassword from './pages/ResetPassword';
+import ForgotPassword from './pages/ForgotPassword';
 
 function App() {
   return (
@@ -45,7 +47,9 @@ function App() {
         <Route path="/:username/:project/edit" element={<EditProject/>} />
         <Route path="/NewToken" element={<NewToken/>} />
         <Route path="/EditToken/:id" element={<EditToken/>} />
-        <Route path="/changePassword/" element={<PasswordChange/>} />
+        <Route path="/changePassword" element={<PasswordChange/>} />
+        <Route path="/resetPassword/:token" element={<ResetPassword/>} />
+        <Route path="/forgotPassword" element={<ForgotPassword/>} />
       </Routes>
     </div>
     </Router>

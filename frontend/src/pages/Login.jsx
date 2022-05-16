@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import {FaSignInAlt} from 'react-icons/fa';
 import {useSelector, useDispatch} from 'react-redux';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, Link} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import {login, reset} from '../features/auth/authSlice';
 import Spinner from '../components/Spinner';
@@ -69,6 +69,9 @@ function Login() {
             <button type="submit" className="btn btn-primary btn-block">Login</button>
             </div>
         </form>
+        <div>
+            <p>Forgot your password? <Link to="/forgotPassword">Reset Password</Link></p>
+        </div>
     </section>
     </>
   )

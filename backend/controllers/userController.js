@@ -4,6 +4,7 @@ import sendEmail from '../middleWare/emailMiddleware.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { v2 as cloudinary } from 'cloudinary';
+import crypto from 'crypto';
 
 const savedUsernames = ["login", "register", "verify", "chat", "chats", "settings", "search", "NewProject", "admin", "api" ];
 
@@ -15,7 +16,7 @@ const generateToken = (id) => {
 
 const registerUser = asyncHandler(async (req, res, next) => {
     const {f_name, l_name, username, email, password, company} = req.body;
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ "email" : { $regex : new RegExp(email, "i") } });
     if (userExists) {
         res.status(400)
         throw new Error('User with that email already exists');
@@ -168,6 +169,10 @@ const updatePassword = asyncHandler(async (req, res, next) => {
         throw new Error('User does not exist');
     }
     const { oldPassword, password } = req.body;
+    if (!oldPassword || !password) {
+        res.status(400)
+        throw new Error('Please provide old and new password');
+    }
     const isMatch = await bcrypt.compare(oldPassword, user.password);
     if (!isMatch) {
         res.status(400)
@@ -180,6 +185,52 @@ const updatePassword = asyncHandler(async (req, res, next) => {
     }, { new: true });
     res.status(200).json({
         success: true
+    });
+});
+
+const createResetPassword = asyncHandler(async (req, res, next) => {
+    const user = await User.findOne({ "email" : { $regex : new RegExp(`^${req.body.email}$`, 'i') } });
+    if (!user) {
+        res.status(400)
+        throw new Error('Email not found');
+    }
+    var generatedToken = crypto.randomBytes(26).toString('hex');
+    while (await User.findOne({reset_token: generatedToken})) {
+        generatedToken = crypto.randomBytes(26).toString('hex');
+    }
+    user.reset_token = generatedToken;
+    await user.save();
+    sendEmail(user.email, 'Reset your password', `Please click on the link to reset your password: ${process.env.HOST_ADDRESS}/resetPassword/${user.reset_token}`);
+    res.status(200).json({
+        success: true,
+        message: 'Reset password email sent'
+    });
+});
+
+const resetPassword = asyncHandler(async (req, res, next) => {
+    if (!req.body.password) {
+        res.status(400)
+        throw new Error('Password is required');
+    }
+    if (!req.params.token) {
+        res.status(400)
+        throw new Error('Reset token is required');
+    }
+    const user = await User.findOne({ reset_token: req.params.token });
+    if (!user) {
+        res.status(400)
+        throw new Error('Reset Token expired or invalid, please send a new reset email');
+    }
+    const { password } = req.body;
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const updatedUser = await User.findOneAndUpdate({ reset_token: req.params.token }, {
+        password: hashedPassword,
+        reset_token: null
+    }, { new: true });
+    res.status(200).json({
+        success: true,
+        message: 'Password updated successfully'
     });
 });
 
@@ -257,4 +308,4 @@ const getUserByid = asyncHandler(async (req, res, next) => {
 });
 
 
-export {registerUser, loginUser, getUser, verifyUser, updateFollow, searchUser, getUserByid, updateUser, updatePassword};
+export {registerUser, loginUser, getUser, verifyUser, updateFollow, searchUser, getUserByid, updateUser, updatePassword, createResetPassword, resetPassword};

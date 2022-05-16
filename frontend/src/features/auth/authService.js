@@ -49,7 +49,7 @@ const searchUser = async (username) => {
 }
 
 const getUserByid = async (id, token) => {
-    const response = await axios.get(API_URL + "/id/" + id);
+    const response = await axios.get(API_URL + "id/" + id);
     return response;
 }
 
@@ -99,6 +99,18 @@ const updatePassword = async (data, token) => {
 }
 
 
+const resetPassword = async (data, token) => {
+    const response = await axios.put(API_URL + "resetPassword/" + token, data);
+    return response;
+}
+
+
+const createResetPassword = async (data) => {
+    const response = await axios.post(API_URL + "sendResetPassword/", data);
+    return response;
+}
+
+
 const authService = {
     register,
     logout,
@@ -109,7 +121,9 @@ const authService = {
     searchUser,
     getUserByid,
     updateUser,
-    updatePassword
+    updatePassword,
+    createResetPassword,
+    resetPassword
 };
 
 export default authService;

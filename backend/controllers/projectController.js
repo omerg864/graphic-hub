@@ -14,7 +14,7 @@ cloudinary.config({
 
 
 
-const populate_user = {path: 'user', select: ['-password', '-__v', '-createdAt', '-updatedAt', '-verified']};
+const populate_user = {path: 'user', select: ['-password', '-__v', '-createdAt', '-updatedAt', '-verified', '-reset_token']};
 
 const getProjects = asyncHandler(async (req, res, next) => {
     const query = req.query;

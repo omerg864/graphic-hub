@@ -1,12 +1,14 @@
-import { useEffect} from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { reset } from '../features/auth/authSlice';
-import Spinner from '../components/Spinner';
-import PasswordForm from '../components/PasswordForm';
+import PasswordForm from "../components/PasswordForm"
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import Spinner from "../components/Spinner";
+import { toast } from "react-toastify";
+import { reset } from "../features/auth/authSlice";
 
-function PasswordChange() {
+
+
+function ResetPassword() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -14,17 +16,16 @@ function PasswordChange() {
     const { isLoading, isSuccess, isError, message } = useSelector((state) => state.auth);
 
     useEffect(() => {
-        if(isError){
+        if (isError) {
             toast.error(message);
             dispatch(reset());
         }
-        if(isSuccess){
+        if (isSuccess) {
             toast.success("Password changed successfully");
             dispatch(reset());
-            navigate("/settings");
+            navigate("/login");
         }
     }, [isSuccess, isError, message, navigate, dispatch]);
-
 
     if (isLoading) {
         return <Spinner />;
@@ -34,12 +35,12 @@ function PasswordChange() {
     <>
     <div className="center-div">
         <div className="content-section">
-    <h1>Password Change</h1>
-    <PasswordForm type="Change" />
+    <h1>Password Reset</h1>
+    <PasswordForm type="Reset" />
     </div>
     </div>
     </>
   )
 }
 
-export default PasswordChange
+export default ResetPassword
