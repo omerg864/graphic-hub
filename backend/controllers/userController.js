@@ -8,6 +8,8 @@ import crypto from 'crypto';
 
 const savedUsernames = ["login", "register", "verify", "chat", "chats", "settings", "search", "NewProject", "admin", "api" ];
 
+const deselect = ['-password', "-reset_token", "-__v", "-createdAt", "-updatedAt"];
+
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: '30d'
@@ -85,7 +87,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
 });
 
 const getUser = asyncHandler(async (req, res, next) => {
-    const user = await User.findOne({username: req.params.username}).select('-password', "-reset_token", "-__v", "createdAt", "updatedAt");
+    const user = await User.findOne({username: req.params.username}).select(deselect);
     if (!user) {
         res.status(400)
         throw new Error('User does not exist');
@@ -252,12 +254,12 @@ const updateFollow = asyncHandler(async (req, res, next) => {
             $pull: {
                 followers: req.user.username
             }
-        }, {new: true}).select('-password', "-reset_token", "-__v", "createdAt", "updatedAt");
+        }, {new: true}).select(deselect);
         const me = await User.findByIdAndUpdate(req.user._id, {
             $pull: {
                 following: user.username
             }
-        }, {new: true}).select('-password', "-reset_token", "-__v", "createdAt", "updatedAt");
+        }, {new: true}).select(deselect);
         res.status(200).json({
             success: true,
             friend: updatedUser,
@@ -268,12 +270,12 @@ const updateFollow = asyncHandler(async (req, res, next) => {
             $push: {
                 followers: req.user.username
             }
-        }, {new: true}).select('-password', "-reset_token", "-__v", "createdAt", "updatedAt");
+        }, {new: true}).select(deselect);
         const me = await User.findByIdAndUpdate(req.user._id, {
             $push: {
                 following: user.username
             }
-        }, {new: true}).select('-password', "-reset_token", "-__v", "createdAt", "updatedAt");
+        }, {new: true}).select(deselect);
         res.status(200).json({
             success: true,
             friend: updatedUser,
@@ -294,7 +296,7 @@ const searchUser = asyncHandler(async (req, res, next) => {
             {email: {$regex: username, $options: 'i'}}
 
         ]
-    }).select('-password', "-reset_token", "-__v", "createdAt", "updatedAt");
+    }).select(deselect);
     res.status(200).json({
         success: true,
         users: users
@@ -302,7 +304,7 @@ const searchUser = asyncHandler(async (req, res, next) => {
 });
 
 const getUserByid = asyncHandler(async (req, res, next) => {
-    const user = await User.findById(req.params.id).select('-password', "-reset_token", "-__v", "createdAt", "updatedAt");
+    const user = await User.findById(req.params.id).select(deselect);
     if (!user) {
         res.status(400)
         throw new Error('User does not exist');
