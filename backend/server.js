@@ -38,8 +38,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/workFlow", workFlowRoutes);
 
 if (process.env.NODE_ENV === 'production') {
+  console.log(`Server is running on production mode`);
   app.use(express.static(path.join(__dirname, '../frontend/build')));
-
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../', 'frontend', 'build', 'index.html'));
   })
