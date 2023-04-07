@@ -10,7 +10,8 @@
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend",
-    "search": "node backend/config/findNewData.js"
+    "search": "node backend/config/findNewData.js",
+    "install_all": "cd frontend && npm install && cd .. npm install"
   },
   "author": "omerg",
   "license": "ISC",
